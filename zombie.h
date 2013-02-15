@@ -3,15 +3,18 @@
 
 //External libraries
 #include <stdio.h>
+#include <string.h>
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 
 //Basic macros
 #define ZOMBIE_NAME "Zombie by Mwitishi"
-#define ZOMBIE_VERSION "v0.0"
+#define ZOMBIE_VERSION "v0.1"
 
 #define ZOMBIE_IMG_FOLDER ""
 #define ZOMBIE_TILE_IMG "zombie_tile.png"
+#define ZOMBIE_PLAYER_IMG "zombie_player.png"
+#define ZOMBIE_ZOMBIE_IMG "zombie_zombie.png"
 
 #define ZOMBIE_SCREEN_X 640
 #define ZOMBIE_SCREEN_Y 480
@@ -27,6 +30,8 @@
 extern SDL_Surface *screen;
 extern SDL_Surface *background;
 extern SDL_Surface *tile;
+extern SDL_Surface *img_player;
+extern SDL_Surface *img_zombie;
 
 #endif
 

@@ -7,11 +7,15 @@
 SDL_Surface *screen=NULL;
 SDL_Surface *background=NULL;
 SDL_Surface *tile=NULL;
+SDL_Surface *img_player=NULL;
+SDL_Surface *img_zombie=NULL;
 
 SDL_Surface *zombie_load_img(char *name)
 {
     char *str1=NULL;
     SDL_Surface *img1,*img2;
+
+    if(name==NULL) return NULL;
 
     //Allocate memory for image path
     str1=(char*)malloc(strlen(ZOMBIE_IMG_FOLDER)+strlen(name)+1);
@@ -31,6 +35,47 @@ SDL_Surface *zombie_load_img(char *name)
 
     //Return converted image
     return img2;
+}
+
+int zombie_init()
+{
+    //SDL initializing,check for error
+    if(SDL_Init(SDL_INIT_EVERYTHING)!=0)
+        return 1;
+
+    //Create screen, check for error
+    screen=SDL_SetVideoMode(ZOMBIE_SCREEN_X,ZOMBIE_SCREEN_Y,ZOMBIE_BPP,SDL_SWSURFACE);
+    if(screen==NULL)
+        return 1;
+
+    //Load background
+    if(zombie_background_make()!=0)
+        return 1;
+
+    img_player=zombie_load_img(ZOMBIE_PLAYER_IMG);
+    if(img_player==NULL) return 1;
+
+    img_zombie=zombie_load_img(ZOMBIE_ZOMBIE_IMG);
+    if(img_zombie==NULL) return 1;
+
+    //Blit background to screen
+    if(SDL_BlitSurface(background,NULL,screen,NULL)!=0)
+        return 1;
+
+    //Update screen
+    if(SDL_Flip(screen)!=0)
+        return 1;
+
+    return 0;
+}
+
+int zombie_clear()
+{
+    SDL_FreeSurface(tile);
+    SDL_FreeSurface(background);
+    SDL_Quit();
+
+    return 0;
 }
 
 //Function for creating the background image
@@ -79,49 +124,23 @@ int main(int argc,char **argv)
         return 0;
     }
 
-    //SDL initializing,check for error
-    if(SDL_Init(SDL_INIT_EVERYTHING)!=0)
+    //Initialize
+    if(zombie_init()!=0)
     {
-        printf("Error during SDL initializing.\n");
+        printf("Error during initializing.\n");
         return 1;
     }
 
-    //Create screen, check for error
-    screen=SDL_SetVideoMode(ZOMBIE_SCREEN_X,ZOMBIE_SCREEN_Y,ZOMBIE_BPP,SDL_SWSURFACE);
-    if(screen==NULL)
-    {
-        printf("Error while creating window.\n");
-        return 2;
-    }
-
-    //Load background
-    if(zombie_background_make()!=0)
-    {
-        printf("Error while creating background.\n");
-        return 3;
-    }
-
-    //Blit background to screen
-    if(SDL_BlitSurface(background,NULL,screen,NULL)!=0)
-    {
-        printf("Error while blitting background to screen.\n");
-        return 4;
-    }
-
-    //Update screen
-    if(SDL_Flip(screen)!=0)
-    {
-        printf("Error while flipping screen.\n");
-        return 5;
-    }
-
+    //Main loop
     while(1)
     {
         //Store time of tick beginning
         t1=SDL_GetTicks();
 
+        //Event processing
         while(SDL_PollEvent(&e1)!=0)
         {
+            //Pressing X button
             if(e1.type==SDL_QUIT) goto end;
         }
 
@@ -130,12 +149,7 @@ int main(int argc,char **argv)
     }
 
 end:
-    //Free memory
-    SDL_FreeSurface(tile);
-    SDL_FreeSurface(background);
-
-    //SDL closing
-    SDL_Quit();
+    zombie_clear();
 
     return 0;
 }
