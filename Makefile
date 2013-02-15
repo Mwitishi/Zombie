@@ -1,2 +1,2 @@
 all:
-	gcc *.c -lSDL -o ../bin/zombie
+	gcc *.c -lSDL -lSDL_image -o ../bin/zombie
