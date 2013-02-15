@@ -43,8 +43,13 @@ struct zent{
     float y;
     int w;
     int h;
+    int st;
+    int qst;
+    int tpf;
+    int *qfr;
 };
 
 //Declarations of functions in file zent.c
+struct zent zent_make(SDL_Surface*,float,float,int,int,int);
 
 #endif

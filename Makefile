@@ -1,5 +1,5 @@
 CC=gcc
-CSOURCE=zombie.c
+CSOURCE=zombie.c zent.c
 CHEADER=zombie.h
 FLAGS=-lSDL -lSDL_image
 EXE=../bin/zombie
