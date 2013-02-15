@@ -1,4 +1,12 @@
+//This definition avoids declaring extern variables
+#define ZOMBIE_EXTERN
+
 #include "zombie.h"
+
+//Global variables
+SDL_Surface *screen=NULL;
+SDL_Surface *background=NULL;
+SDL_Surface *tile=NULL;
 
 int main(int argc,char **argv)
 {
