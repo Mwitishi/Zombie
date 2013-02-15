@@ -64,6 +64,7 @@ int zombie_background_make()
 int main(int argc,char **argv)
 {
     uint32_t t1;
+    SDL_Event e1;
 
     //Print game data
     printf("%s %s\n",ZOMBIE_NAME,ZOMBIE_VERSION);
@@ -114,10 +115,21 @@ int main(int argc,char **argv)
         return 5;
     }
 
-    //Wait
-    t1=SDL_GetTicks();
-    while(SDL_GetTicks()-t1<2000);
+    while(1)
+    {
+        //Store time of tick beginning
+        t1=SDL_GetTicks();
 
+        while(SDL_PollEvent(&e1)!=0)
+        {
+            if(e1.type==SDL_QUIT) goto end;
+        }
+
+        //Ticks must last at least specified time
+        while(SDL_GetTicks()-t1<ZOMBIE_TICK_MS);
+    }
+
+end:
     //Free memory
     SDL_FreeSurface(tile);
     SDL_FreeSurface(background);

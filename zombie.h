@@ -18,6 +18,8 @@
 #define ZOMBIE_BPP 32
 #define ZOMBIE_TILE_SIZE 32
 
+#define ZOMBIE_TICK_MS 100
+
 //Global variable declarations
 #ifndef ZOMBIE_EXTERN
 #define ZOMBIE_EXTERN
