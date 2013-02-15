@@ -9,6 +9,8 @@ SDL_Surface *background=NULL;
 SDL_Surface *tile=NULL;
 SDL_Surface *img_player=NULL;
 SDL_Surface *img_zombie=NULL;
+//Counts current amount of ticks (for animations)
+uint32_t tick=0;
 
 SDL_Surface *zombie_load_img(char *name)
 {
@@ -146,6 +148,7 @@ int main(int argc,char **argv)
 
         //Ticks must last at least specified time
         while(SDL_GetTicks()-t1<ZOMBIE_TICK_MS);
+        tick++;
     }
 
 end:
