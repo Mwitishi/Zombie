@@ -35,4 +35,16 @@ extern SDL_Surface *img_zombie;
 
 #endif
 
+//Structure for entities (player, zombies, shots)
+struct zent{
+    SDL_Surface *img;
+    SDL_Rect lastbox;
+    float x;
+    float y;
+    int w;
+    int h;
+};
+
+//Declarations of functions in file zent.c
+
 #endif
