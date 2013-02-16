@@ -13,13 +13,17 @@ struct zent zent_make(SDL_Surface *img, float x, float y, int w, int h, int tpf)
     ze1.vy = 0;
     ze1.w = w;
     ze1.h = h;
+    //Set lastbox position to inexistent
     ze1.lastbox.x = -1;
     ze1.lastbox.y = (int)y;
     ze1.lastbox.w = w;
     ze1.lastbox.h = h;
     ze1.tpf = tpf;
     ze1.st = 0;
+    //Calculate state amount from image
     ze1.qst = img->h / h;
+
+    //Make frames array, set all values to maximum (in image)
     ze1.qfr = (int*) malloc(ze1.qst * sizeof(int));
     for(i1 = 0 ; i1 < ze1.qst ; i1++)
         ze1.qfr[i1] = img->w / w;
@@ -48,7 +52,7 @@ int zent_draw(struct zent *ze1)
 
     if(r2.x == ze1->lastbox.x && r2.y == ze1->lastbox.y) return 0;
 
-    //Empty previous position, draw at new position
+    //Empty previous position, draw at new position, check error
     if((ze1->lastbox.x != -1 &&
         SDL_BlitSurface(background, &(ze1->lastbox), screen, &(ze1->lastbox)) != 0) ||
         SDL_BlitSurface(ze1->img, &r1, screen, &r2) != 0) return 1;
@@ -62,9 +66,11 @@ int zent_draw(struct zent *ze1)
 //Function for freeing memory and stuff
 int zent_clear(struct zent **ze1)
 {
+    //If null pointers
     if(ze1 == NULL) return 1;
     if(*ze1 == NULL) return 0;
 
+    //Free memory, set pointer to NULL
     free(*ze1);
     *ze1 = NULL;
 

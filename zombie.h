@@ -2,8 +2,10 @@
 #define ZOMBIE_H
 
 //External libraries
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 
@@ -65,6 +67,15 @@ struct zent{
     int tpf;
     int *qfr;
 };
+
+//Declarations of functions in file zombie.c
+SDL_Surface *zombie_load_img(char*, char);
+int zombie_init();
+int zombie_background_make();
+int zombie_boxes_make();
+int zombie_event();
+int zombie_update();
+int zombie_clear();
 
 //Declarations of functions in file zent.c
 struct zent zent_make(SDL_Surface*, float, float, int, int, int);

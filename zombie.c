@@ -4,12 +4,14 @@
 #include "zombie.h"
 
 //Global variables
+//Screen & images
 SDL_Surface *screen = NULL;
 SDL_Surface *background = NULL;
 SDL_Surface *tile = NULL;
 SDL_Surface *img_player = NULL;
 SDL_Surface *img_zombie = NULL;
 SDL_Surface *img_box = NULL;
+//Entities
 struct zent *player = NULL;
 struct zent **boxes = NULL;
 //Counts current amount of ticks (for animations)
@@ -18,9 +20,12 @@ uint32_t tick = 0;
 //Function for loading an image and preparing it
 SDL_Surface *zombie_load_img(char *name, char alpha)
 {
+    //Stores image path
     char *str1 = NULL;
-    SDL_Surface *img1, *img2;
+    //Store pre- and post-conversion images
+    SDL_Surface *img1 = NULL, *img2 = NULL;
 
+    //Check if valid name
     if(name == NULL) return NULL;
 
     //Allocate memory for image path
@@ -57,14 +62,13 @@ int zombie_init()
 
     //Create screen, check for error
     screen = SDL_SetVideoMode(ZOMBIE_SCREEN_X,ZOMBIE_SCREEN_Y,ZOMBIE_BPP,SDL_SWSURFACE);
-    if(screen == NULL)
-        return 1;
+    if(screen == NULL) return 1;
 
+    //Set window title
     SDL_WM_SetCaption(ZOMBIE_NAME, NULL);
 
     //Load background
-    if(zombie_background_make() != 0)
-        return 1;
+    if(zombie_background_make() != 0) return 1;
 
     //Loading images
     img_player = zombie_load_img(ZOMBIE_PLAYER_IMG, 1);
@@ -82,6 +86,7 @@ int zombie_init()
     *player = zent_make(img_player, 150.0, 100.0, ZOMBIE_PLAYER_SIZE, ZOMBIE_PLAYER_SIZE, 2);
     for(i1 = 0 ; i1 < 4 ; i1++) player->qfr[i1] = 1;
 
+    //Create boxes array & fill
     boxes = (struct zent**) malloc(sizeof(struct zent*) * ZOMBIE_BOX_QUAN);
     if(boxes == NULL) return 1;
     if(zombie_boxes_make() != 0) return 1;
@@ -93,27 +98,6 @@ int zombie_init()
     //Update screen
     if(SDL_Flip(screen) != 0)
         return 1;
-
-    return 0;
-}
-
-//Final stuff
-int zombie_clear()
-{
-    int i1;
-
-    zent_clear(&player);
-    for(i1 = 0 ; i1 < ZOMBIE_BOX_QUAN ; i1++)
-        zent_clear(boxes + i1);
-    free(boxes);
-    boxes = NULL;
-
-    SDL_FreeSurface(img_player);
-    SDL_FreeSurface(img_zombie);
-    SDL_FreeSurface(img_box);
-    SDL_FreeSurface(tile);
-    SDL_FreeSurface(background);
-    SDL_Quit();
 
     return 0;
 }
@@ -138,8 +122,10 @@ int zombie_background_make()
     for(i1 = 0 ; i1 < ZOMBIE_SCREEN_X / ZOMBIE_TILE_SIZE ; i1++)
         for(i2 = 0;i2 < ZOMBIE_SCREEN_Y / ZOMBIE_TILE_SIZE ; i2++)
         {
+            //Fill rectangle data
             r1.x = i1 * ZOMBIE_TILE_SIZE;
             r1.y = i2 * ZOMBIE_TILE_SIZE;
+            //Blit tile to correspondent position, check error
             if(SDL_BlitSurface(tile, &(tile->clip_rect), background, &r1) != 0)
                 return 3;
         }
@@ -147,14 +133,20 @@ int zombie_background_make()
     return 0;
 }
 
+//Place box entities randomly across the screen
 int zombie_boxes_make()
 {
     int i1;
 
+    //Initialize random seed
     srand(time(NULL));
 
+    //Check if array exists
     if(boxes == NULL) return 1;
+
+    //Loop through array
     for(i1 = 0 ; i1 < ZOMBIE_BOX_QUAN ; i1++) {
+        //Allocate memory & create box
         boxes[i1] = (struct zent*) malloc(sizeof(struct zent));
         if(boxes[i1] == NULL) return 1;
         *(boxes[i1]) = zent_make(img_box, rand() % (ZOMBIE_SCREEN_X-ZOMBIE_BOX_SIZE),
@@ -164,11 +156,12 @@ int zombie_boxes_make()
     return 0;
 }
 
+//Function for processing keyboard & other input
 int zombie_event()
 {
     SDL_Event e1;
 
-    //Event processing
+    //Loop through all pending events
     while(SDL_PollEvent(&e1) != 0) {
         //Pressing X button
         if(e1.type == SDL_QUIT) return 1;
@@ -279,8 +272,10 @@ int zombie_event()
     return 0;
 }
 
+//Update entity positions and stuff
 int zombie_update()
 {
+    //Move player if he exists
     if(player != NULL)
     {
         player->x += player->vx;
@@ -290,11 +285,33 @@ int zombie_update()
     return 0;
 }
 
+//Final stuff
+int zombie_clear()
+{
+    int i1;
+
+    //Free entity memory
+    zent_clear(&player);
+    for(i1 = 0 ; i1 < ZOMBIE_BOX_QUAN ; i1++)
+        zent_clear(boxes + i1);
+    free(boxes);
+    boxes = NULL;
+
+    //Free images
+    SDL_FreeSurface(img_player);
+    SDL_FreeSurface(img_zombie);
+    SDL_FreeSurface(img_box);
+    SDL_FreeSurface(tile);
+    SDL_FreeSurface(background);
+    SDL_Quit();
+
+    return 0;
+}
+
 int main(int argc, char **argv)
 {
     int i1;
     uint32_t t1;
-    SDL_Event e1;
 
     //Print game data
     printf("%s %s\n", ZOMBIE_NAME, ZOMBIE_VERSION);
@@ -322,17 +339,20 @@ int main(int argc, char **argv)
         //Store time of tick beginning
         t1=SDL_GetTicks();
 
+        //Event processing
         if(zombie_event() != 0) goto end;
 
+        //Update positions
         zombie_update();
 
-        //Entity drawing
+        //Entity drawing: player
         if(zent_draw(player) != 0)
         {
             printf("Error while drawing entity.\n");
             return 1;
         }
 
+        //Entity drawing: boxes
         for(i1 = 0 ; i1 < ZOMBIE_BOX_QUAN ; i1++) {
             if(boxes[i1] == NULL) continue;
 
