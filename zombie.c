@@ -25,15 +25,23 @@ SDL_Surface *zombie_load_img(char *name, char alpha)
     //Store pre- and post-conversion images
     SDL_Surface *img1 = NULL, *img2 = NULL;
 
+    if(DEBUGMODE) printf("Trying to load image.\n");
+
     //Check if valid name
     if(name == NULL) return NULL;
+
+    if(DEBUGMODE) printf("Image name: %s. Trying to make path.\n", name);
 
     //Allocate memory for image path
     str1 = (char*) malloc(strlen(ZOMBIE_IMG_FOLDER) + strlen(name) + 1);
     if(str1 == NULL) return NULL;
 
+    if(DEBUGMODE) printf("Memory for str1 allocated.\n");
+
     //Make image path
     sprintf(str1, "%s%s", ZOMBIE_IMG_FOLDER, name);
+
+    if(DEBUGMODE) printf("Image path: %s. Trying to load image.\n", str1);
 
     //Load image, free memory
     img1 = IMG_Load(str1);
@@ -41,11 +49,15 @@ SDL_Surface *zombie_load_img(char *name, char alpha)
     str1 = NULL;
     if(img1 == NULL) return NULL;
 
+    if(DEBUGMODE) printf("Image loaded into img1. Trying to convert to required format.\n");
+
     //Convert to display format, free old image
     if(alpha) img2 = SDL_DisplayFormatAlpha(img1);
     else img2 = SDL_DisplayFormat(img1);
     SDL_FreeSurface(img1);
     img1 = NULL;
+
+    if(DEBUGMODE) printf("Image loaded and returned successfully.\n");
 
     //Return converted image
     return img2;
@@ -56,19 +68,29 @@ int zombie_init()
 {
     int i1;
 
+    if(DEBUGMODE) printf("Trying to initialize SDL.\n");
+
     //SDL initializing,check for error
     if(SDL_Init(SDL_INIT_EVERYTHING) != 0)
         return 1;
+
+    if(DEBUGMODE) printf("SDL initialized successfully. Trying to create screen.\n");
 
     //Create screen, check for error
     screen = SDL_SetVideoMode(ZOMBIE_SCREEN_X,ZOMBIE_SCREEN_Y,ZOMBIE_BPP,SDL_SWSURFACE);
     if(screen == NULL) return 1;
 
+    if(DEBUGMODE) printf("Screen created successfully. Trying to set title.\n");
+
     //Set window title
     SDL_WM_SetCaption(ZOMBIE_NAME, NULL);
 
+    if(DEBUGMODE) printf("Title set successfully. Trying to create background.\n");
+
     //Load background
     if(zombie_background_make() != 0) return 1;
+
+    if(DEBUGMODE) printf("Background created successfully. Trying to load images.\n");
 
     //Loading images
     img_player = zombie_load_img(ZOMBIE_PLAYER_IMG, 1);
@@ -80,20 +102,28 @@ int zombie_init()
     img_box = zombie_load_img(ZOMBIE_BOX_IMG ,0);
     if(img_box == NULL) return 1;
 
+    if(DEBUGMODE) printf("Images loaded successfully. Trying to create player.\n");
+
     //Create player entity
     player = (struct zent*) malloc(sizeof(struct zent));
     if(player == NULL) return 1;
     *player = zent_make(img_player, 150.0, 100.0, ZOMBIE_PLAYER_SIZE, ZOMBIE_PLAYER_SIZE, 2);
     for(i1 = 0 ; i1 < 4 ; i1++) player->qfr[i1] = 1;
 
+    if(DEBUGMODE) printf("Player created successfully. Trying to create boxes.\n");
+
     //Create boxes array & fill
     boxes = (struct zent**) malloc(sizeof(struct zent*) * ZOMBIE_BOX_QUAN);
     if(boxes == NULL) return 1;
     if(zombie_boxes_make() != 0) return 1;
 
+    if(DEBUGMODE) printf("Boxes created successfully. Trying to draw background.\n");
+
     //Blit background to screen
     if(SDL_BlitSurface(background, NULL, screen, NULL) != 0)
         return 1;
+
+    if(DEBUGMODE) printf("Trying to update screen.\n");
 
     //Update screen
     if(SDL_Flip(screen) != 0)
