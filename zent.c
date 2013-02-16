@@ -9,6 +9,8 @@ struct zent zent_make(SDL_Surface *img,float x,float y,int w,int h,int tpf)
     ze1.img=img;
     ze1.x=x;
     ze1.y=y;
+    ze1.vx=0;
+    ze1.vy=0;
     ze1.w=w;
     ze1.h=h;
     ze1.lastbox.x=(int)x;

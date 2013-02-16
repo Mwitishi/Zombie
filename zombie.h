@@ -12,7 +12,7 @@
 #define ZOMBIE_VERSION "v0.1"
 
 //File and directory names
-#define ZOMBIE_IMG_FOLDER ""
+#define ZOMBIE_IMG_FOLDER "imgs/"
 #define ZOMBIE_TILE_IMG "zombie_tile.png"
 #define ZOMBIE_PLAYER_IMG "zombie_player.png"
 #define ZOMBIE_ZOMBIE_IMG "zombie_zombie.png"
@@ -22,9 +22,12 @@
 #define ZOMBIE_SCREEN_Y 480
 #define ZOMBIE_BPP 32
 #define ZOMBIE_TILE_SIZE 32
-#define ZOMBIE_TICK_MS 100
 #define ZOMBIE_PLAYER_SIZE 32
 #define ZOMBIE_ZOMBIE_SIZE 32
+#define ZOMBIE_PLAYER_V 2
+#define ZOMBIE_ZOMBIE_V 1.5
+#define ZOMBIE_TICK_MS 100
+#define ZOMBIE_MAX_TICK 16
 
 //Global variable declarations
 #ifndef ZOMBIE_EXTERN
@@ -46,6 +49,8 @@ struct zent{
     SDL_Rect lastbox;
     float x;
     float y;
+    float vx;
+    float vy;
     int w;
     int h;
     int st;
@@ -57,5 +62,6 @@ struct zent{
 //Declarations of functions in file zent.c
 struct zent zent_make(SDL_Surface*,float,float,int,int,int);
 int zent_draw(struct zent*);
+int zent_clear(struct zent**);
 
 #endif

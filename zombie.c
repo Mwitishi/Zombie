@@ -13,6 +13,7 @@ struct zent *player=NULL;
 //Counts current amount of ticks (for animations)
 uint32_t tick=0;
 
+//Function for loading an image and preparing it
 SDL_Surface *zombie_load_img(char *name,char alpha)
 {
     char *str1=NULL;
@@ -43,8 +44,11 @@ SDL_Surface *zombie_load_img(char *name,char alpha)
     return img2;
 }
 
+//Initializing stuff
 int zombie_init()
 {
+    int i1;
+
     //SDL initializing,check for error
     if(SDL_Init(SDL_INIT_EVERYTHING)!=0)
         return 1;
@@ -58,6 +62,7 @@ int zombie_init()
     if(zombie_background_make()!=0)
         return 1;
 
+    //Loading images
     img_player=zombie_load_img(ZOMBIE_PLAYER_IMG,1);
     if(img_player==NULL) return 1;
 
@@ -68,7 +73,7 @@ int zombie_init()
     player=(struct zent*)malloc(sizeof(struct zent));
     if(player==NULL) return 1;
     *player=zent_make(img_player,150.0,100.0,ZOMBIE_PLAYER_SIZE,ZOMBIE_PLAYER_SIZE,2);
-    player->qfr[0]=1;
+    for(i1=0;i1<4;i1++) player->qfr[i1]=1;
 
     //Blit background to screen
     if(SDL_BlitSurface(background,NULL,screen,NULL)!=0)
@@ -81,6 +86,7 @@ int zombie_init()
     return 0;
 }
 
+//Final stuff
 int zombie_clear()
 {
     zent_clear(&player);
@@ -115,6 +121,17 @@ int zombie_background_make()
             if(SDL_BlitSurface(tile,&(tile->clip_rect),background,&r1)!=0)
                 return 3;
         }
+
+    return 0;
+}
+
+int zombie_update()
+{
+    if(player!=NULL)
+    {
+        player->x+=player->vx;
+        player->y+=player->vy;
+    }
 
     return 0;
 }
@@ -155,14 +172,87 @@ int main(int argc,char **argv)
         {
             //Pressing X button
             if(e1.type==SDL_QUIT) goto end;
+
+            if(e1.type==SDL_KEYDOWN)
+            {
+                if(e1.key.keysym.sym==SDLK_LEFT) {
+                    player->vx-=ZOMBIE_PLAYER_V;
+                    if(player->vy==0&&player->vx!=0) {
+                        player->st&=0xfc;
+                        player->st|=0x03;
+                    }
+                }
+
+                if(e1.key.keysym.sym==SDLK_UP) {
+                    player->vy-=ZOMBIE_PLAYER_V;
+                    if(player->vx==0&&player->vy!=0) {
+                        player->st&=0xfc;
+                        player->st|=0x00;
+                    }
+                }
+
+                if(e1.key.keysym.sym==SDLK_RIGHT) {
+                    player->vx+=ZOMBIE_PLAYER_V;
+                    if(player->vy==0&&player->vx!=0) {
+                        player->st&=0xfc;
+                        player->st|=0x01;
+                    }
+                }
+
+                if(e1.key.keysym.sym==SDLK_DOWN) {
+                    player->vy+=ZOMBIE_PLAYER_V;
+                    if(player->vx==0&&player->vy!=0) {
+                        player->st&=0xfc;
+                        player->st|=0x02;
+                    }
+                }
+            }
+
+            if(e1.type==SDL_KEYUP) {
+                if(e1.key.keysym.sym==SDLK_LEFT) {
+                    player->vx+=ZOMBIE_PLAYER_V;
+                    if(player->vx>0) {
+                        player->st&=0xfc;
+                        player->st|=0x01;
+                    }
+                }
+
+                if(e1.key.keysym.sym==SDLK_UP) {
+                    player->vy+=ZOMBIE_PLAYER_V;
+                    if(player->vy>0) {
+                        player->st&=0xfc;
+                        player->st|=0x02;
+                    }
+                }
+
+                if(e1.key.keysym.sym==SDLK_RIGHT) {
+                    player->vx-=ZOMBIE_PLAYER_V;
+                    if(player->vx<0) {
+                        player->st&=0xfc;
+                        player->st|=0x03;
+                    }
+                }
+
+                if(e1.key.keysym.sym==SDLK_DOWN) {
+                    player->vy-=ZOMBIE_PLAYER_V;
+                    if(player->vy<0) {
+                        player->st&=0xfc;
+                        player->st|=0x00;
+                    }
+                }
+            }
         }
 
+        zombie_update();
+
+        //Entity drawing
         if(zent_draw(player)!=0)
         {
             printf("Error while drawing entity.\n");
             return 1;
         }
 
+        //Update screen
         if(SDL_Flip(screen)!=0)
         {
             printf("Error while updating screen.\n");
@@ -171,10 +261,11 @@ int main(int argc,char **argv)
 
         //Ticks must last at least specified time
         while(SDL_GetTicks()-t1<ZOMBIE_TICK_MS);
-        tick++;
+        tick=(tick+1)%ZOMBIE_MAX_TICK;
     }
 
 end:
+    //Final stuff
     zombie_clear();
 
     return 0;
