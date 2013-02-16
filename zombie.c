@@ -9,7 +9,9 @@ SDL_Surface *background=NULL;
 SDL_Surface *tile=NULL;
 SDL_Surface *img_player=NULL;
 SDL_Surface *img_zombie=NULL;
+SDL_Surface *img_box=NULL;
 struct zent *player=NULL;
+struct zent **boxes=NULL;
 //Counts current amount of ticks (for animations)
 uint32_t tick=0;
 
@@ -69,11 +71,18 @@ int zombie_init()
     img_zombie=zombie_load_img(ZOMBIE_ZOMBIE_IMG,1);
     if(img_zombie==NULL) return 1;
 
+    img_box=zombie_load_img(ZOMBIE_BOX_IMG,0);
+    if(img_box==NULL) return 1;
+
     //Create player entity
     player=(struct zent*)malloc(sizeof(struct zent));
     if(player==NULL) return 1;
     *player=zent_make(img_player,150.0,100.0,ZOMBIE_PLAYER_SIZE,ZOMBIE_PLAYER_SIZE,2);
     for(i1=0;i1<4;i1++) player->qfr[i1]=1;
+
+    boxes=(struct zent**)malloc(sizeof(struct zent*)*ZOMBIE_BOX_QUAN);
+    if(boxes==NULL) return 1;
+    if(zombie_boxes_make()!=0) return 1;
 
     //Blit background to screen
     if(SDL_BlitSurface(background,NULL,screen,NULL)!=0)
@@ -89,7 +98,17 @@ int zombie_init()
 //Final stuff
 int zombie_clear()
 {
+    int i1;
+
     zent_clear(&player);
+    for(i1=0;i1<ZOMBIE_BOX_QUAN;i1++)
+        zent_clear(boxes+i1);
+    free(boxes);
+    boxes=NULL;
+
+    SDL_FreeSurface(img_player);
+    SDL_FreeSurface(img_zombie);
+    SDL_FreeSurface(img_box);
     SDL_FreeSurface(tile);
     SDL_FreeSurface(background);
     SDL_Quit();
@@ -125,6 +144,23 @@ int zombie_background_make()
     return 0;
 }
 
+int zombie_boxes_make()
+{
+    int i1;
+
+    srand(time(NULL));
+
+    if(boxes==NULL) return 1;
+    for(i1=0;i1<ZOMBIE_BOX_QUAN;i1++)
+    {
+        boxes[i1]=(struct zent*)malloc(sizeof(struct zent));
+        if(boxes[i1]==NULL) return 1;
+        *(boxes[i1])=zent_make(img_box,rand()%(ZOMBIE_SCREEN_X-ZOMBIE_BOX_SIZE),rand()%(ZOMBIE_SCREEN_Y-ZOMBIE_BOX_SIZE),ZOMBIE_BOX_SIZE,ZOMBIE_BOX_SIZE,1);
+    }
+
+    return 0;
+}
+
 int zombie_update()
 {
     if(player!=NULL)
@@ -138,6 +174,7 @@ int zombie_update()
 
 int main(int argc,char **argv)
 {
+    int i1;
     uint32_t t1;
     SDL_Event e1;
 
@@ -276,6 +313,16 @@ int main(int argc,char **argv)
         {
             printf("Error while drawing entity.\n");
             return 1;
+        }
+        for(i1=0;i1<ZOMBIE_BOX_QUAN;i1++)
+        {
+            if(boxes[i1]==NULL) continue;
+
+            if(zent_draw(boxes[i1])!=0)
+            {
+                printf("Error while drawing entity.\n");
+                return 1;
+            }
         }
 
         //Update screen

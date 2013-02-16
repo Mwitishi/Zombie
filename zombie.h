@@ -25,6 +25,9 @@
 #define ZOMBIE_TILE_SIZE 32
 #define ZOMBIE_PLAYER_SIZE 32
 #define ZOMBIE_ZOMBIE_SIZE 32
+#define ZOMBIE_BOX_SIZE 32
+#define ZOMBIE_ZOMBIE_QUAN 10
+#define ZOMBIE_BOX_QUAN 5
 #define ZOMBIE_PLAYER_V 3.5
 #define ZOMBIE_PLAYER_FDIR_V 2
 #define ZOMBIE_ZOMBIE_V 2.5
@@ -40,7 +43,9 @@ extern SDL_Surface *background;
 extern SDL_Surface *tile;
 extern SDL_Surface *img_player;
 extern SDL_Surface *img_zombie;
+extern SDL_Surface *img_box;
 extern struct zent *player;
+extern struct zent **boxes;
 extern uint32_t tick;
 
 #endif
