@@ -59,7 +59,10 @@ int zent_draw(struct zent *ze1)
     r2.x = (int) (ze1->x);
     r2.y = (int) (ze1->y);
 
-    if(r2.x == ze1->lastbox.x && r2.y == ze1->lastbox.y) return 0;
+    //Do not draw if unneccesary
+    if(r2.x == ze1->lastbox.x && r2.y == ze1->lastbox.y &&
+        (tick / ze1->tpf) % ze1->qfr[ze1->st] ==
+        ((tick - 1) / ze1->tpf) % ze1->qfr[ze1->st]) return 0;
 
     //Empty previous position, draw at new position, check error
     if((ze1->lastbox.x != -1 &&
@@ -83,5 +86,32 @@ int zent_clear(struct zent **ze1)
     free(*ze1);
     *ze1 = NULL;
 
+    return 0;
+}
+
+//Function for checking if entities collide
+int zent_collide(struct zent *ze1, struct zent *ze2)
+{
+    int i1,i2;
+
+    //If entities are NULL, assume there aren't collisions
+    if(ze1 == NULL || ze2 == NULL ||
+        ze1->hitbox == NULL || ze2->hitbox == NULL) return 0;
+
+    //Loop through hitbox rectangles in both entities
+    for(i1 = 0 ; i1 < ze1->qhit ; i1++)
+        for(i2 = 0 ; i2 < ze2->qhit ; i2++)
+        {
+            //If no collision, check next combination
+            if(ze1->hitbox[i1].x + ze1->hitbox[i1].w < ze2->hitbox[i2].x ||
+                ze1->hitbox[i1].x > ze2->hitbox[i2].x + ze2->hitbox[i2].w ||
+                ze1->hitbox[i1].y + ze1->hitbox[i1].h < ze2->hitbox[i2].y ||
+                ze1->hitbox[i1].y > ze2->hitbox[i2].y + ze2->hitbox[i2].h) continue;
+
+            //If collision, return true
+            return 1;
+        }
+
+    //If no collisions overall, return false
     return 0;
 }
