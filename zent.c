@@ -28,6 +28,15 @@ struct zent zent_make(SDL_Surface *img, float x, float y, int w, int h, int tpf)
     for(i1 = 0 ; i1 < ze1.qst ; i1++)
         ze1.qfr[i1] = img->w / w;
 
+    //Default hitbox: 1 rectangle, size of the entity
+    ze1.qhit = 1;
+    ze1.hitbox = (SDL_Rect*) malloc(sizeof(SDL_Rect));
+    //Hitbox positions measured from upperleft corner of the entity
+    ze1.hitbox[0].x=0;
+    ze1.hitbox[0].y=0;
+    ze1.hitbox[0].w=w;
+    ze1.hitbox[0].h=h;
+
     return ze1;
 }
 

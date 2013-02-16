@@ -6,12 +6,14 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+
+//SDL libraries
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 
 //Basic macros
 #define ZOMBIE_NAME "Zombie by Mwitishi"
-#define ZOMBIE_VERSION "v0.1"
+#define ZOMBIE_VERSION "v0.2"
 
 //File and directory names
 #define ZOMBIE_IMG_FOLDER "imgs/"
@@ -54,18 +56,30 @@ extern uint32_t tick;
 
 //Structure for entities (player, zombies, shots)
 struct zent{
+    //Image, with all possible states & frames
     SDL_Surface *img;
+    //Last position, for deleting previous drawn image
     SDL_Rect lastbox;
+    //Position with decimals
     float x;
     float y;
+    //Velocity woth decimals
     float vx;
     float vy;
+    //Entity size
     int w;
     int h;
+    //Current state - number of states
     int st;
     int qst;
+    //Ticks per frame
     int tpf;
+    //Frame amounts (array, 1 entry per state)
     int *qfr;
+    //Hitbox, as multiple rectangles
+    SDL_Rect *hitbox;
+    //Amount of rectangles in hitbox
+    int qhit;
 };
 
 //Declarations of functions in file zombie.c
