@@ -16,6 +16,7 @@
 #define ZOMBIE_TILE_IMG "zombie_tile.png"
 #define ZOMBIE_PLAYER_IMG "zombie_player.png"
 #define ZOMBIE_ZOMBIE_IMG "zombie_zombie.png"
+#define ZOMBIE_BOX_IMG "zombie_box.png"
 
 //Number macros
 #define ZOMBIE_SCREEN_X 640
@@ -24,8 +25,9 @@
 #define ZOMBIE_TILE_SIZE 32
 #define ZOMBIE_PLAYER_SIZE 32
 #define ZOMBIE_ZOMBIE_SIZE 32
-#define ZOMBIE_PLAYER_V 2
-#define ZOMBIE_ZOMBIE_V 1.5
+#define ZOMBIE_PLAYER_V 3.5
+#define ZOMBIE_PLAYER_FDIR_V 2
+#define ZOMBIE_ZOMBIE_V 2.5
 #define ZOMBIE_TICK_MS 100
 #define ZOMBIE_MAX_TICK 16
 

@@ -13,7 +13,7 @@ struct zent zent_make(SDL_Surface *img,float x,float y,int w,int h,int tpf)
     ze1.vy=0;
     ze1.w=w;
     ze1.h=h;
-    ze1.lastbox.x=(int)x;
+    ze1.lastbox.x=-1;
     ze1.lastbox.y=(int)y;
     ze1.lastbox.w=w;
     ze1.lastbox.h=h;
@@ -46,8 +46,10 @@ int zent_draw(struct zent *ze1)
     r2.x=(int)(ze1->x);
     r2.y=(int)(ze1->y);
 
+    if(r2.x==ze1->lastbox.x&&r2.y==ze1->lastbox.y) return 0;
+
     //Empty previous position, draw at new position
-    if(SDL_BlitSurface(background,&(ze1->lastbox),screen,&(ze1->lastbox))!=0
+    if((ze1->lastbox.x!=-1&&SDL_BlitSurface(background,&(ze1->lastbox),screen,&(ze1->lastbox))!=0)
      ||SDL_BlitSurface(ze1->img,&r1,screen,&r2)!=0) return 1;
 
     //Update lastbox, next drawing will erase this one

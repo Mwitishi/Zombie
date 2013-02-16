@@ -173,34 +173,47 @@ int main(int argc,char **argv)
             //Pressing X button
             if(e1.type==SDL_QUIT) goto end;
 
+            //Pressing a key
             if(e1.type==SDL_KEYDOWN)
             {
+                //Left arrow key
                 if(e1.key.keysym.sym==SDLK_LEFT) {
+                    //Change velocity
                     player->vx-=ZOMBIE_PLAYER_V;
+                    //Change facing direction
                     if(player->vy==0&&player->vx!=0) {
                         player->st&=0xfc;
                         player->st|=0x03;
                     }
                 }
 
+                //Up arrow key
                 if(e1.key.keysym.sym==SDLK_UP) {
+                    //Change velocity
                     player->vy-=ZOMBIE_PLAYER_V;
+                    //Change facing direction
                     if(player->vx==0&&player->vy!=0) {
                         player->st&=0xfc;
                         player->st|=0x00;
                     }
                 }
 
+                //Right arrow key
                 if(e1.key.keysym.sym==SDLK_RIGHT) {
+                    //Change velocity
                     player->vx+=ZOMBIE_PLAYER_V;
+                    //Change facing direction
                     if(player->vy==0&&player->vx!=0) {
                         player->st&=0xfc;
                         player->st|=0x01;
                     }
                 }
 
+                //Down arrow key
                 if(e1.key.keysym.sym==SDLK_DOWN) {
+                    //Change velocity
                     player->vy+=ZOMBIE_PLAYER_V;
+                    //Change facing direction
                     if(player->vx==0&&player->vy!=0) {
                         player->st&=0xfc;
                         player->st|=0x02;
@@ -208,33 +221,46 @@ int main(int argc,char **argv)
                 }
             }
 
+            //Releasing a key
             if(e1.type==SDL_KEYUP) {
+                //Left arrow key
                 if(e1.key.keysym.sym==SDLK_LEFT) {
+                    //Change velocity
                     player->vx+=ZOMBIE_PLAYER_V;
+                    //Change facing direction
                     if(player->vx>0) {
                         player->st&=0xfc;
                         player->st|=0x01;
                     }
                 }
 
+                //Up arrow key
                 if(e1.key.keysym.sym==SDLK_UP) {
+                    //Change velocity
                     player->vy+=ZOMBIE_PLAYER_V;
+                    //Change facing direction
                     if(player->vy>0) {
                         player->st&=0xfc;
                         player->st|=0x02;
                     }
                 }
 
+                //Right arrow key
                 if(e1.key.keysym.sym==SDLK_RIGHT) {
+                    //Change velocity
                     player->vx-=ZOMBIE_PLAYER_V;
+                    //Change facing direction
                     if(player->vx<0) {
                         player->st&=0xfc;
                         player->st|=0x03;
                     }
                 }
 
+                //Down arrow key
                 if(e1.key.keysym.sym==SDLK_DOWN) {
+                    //Change velocity
                     player->vy-=ZOMBIE_PLAYER_V;
+                    //Change facing direction
                     if(player->vy<0) {
                         player->st&=0xfc;
                         player->st|=0x00;
