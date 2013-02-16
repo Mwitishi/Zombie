@@ -9,10 +9,11 @@ SDL_Surface *background=NULL;
 SDL_Surface *tile=NULL;
 SDL_Surface *img_player=NULL;
 SDL_Surface *img_zombie=NULL;
+struct zent *player=NULL;
 //Counts current amount of ticks (for animations)
 uint32_t tick=0;
 
-SDL_Surface *zombie_load_img(char *name)
+SDL_Surface *zombie_load_img(char *name,char alpha)
 {
     char *str1=NULL;
     SDL_Surface *img1,*img2;
@@ -29,11 +30,14 @@ SDL_Surface *zombie_load_img(char *name)
     //Load image, free memory
     img1=IMG_Load(str1);
     free(str1);
+    str1=NULL;
     if(img1==NULL) return NULL;
 
     //Convert to display format, free old image
-    img2=SDL_DisplayFormat(img1);
+    if(alpha) img2=SDL_DisplayFormatAlpha(img1);
+    else img2=SDL_DisplayFormat(img1);
     SDL_FreeSurface(img1);
+    img1=NULL;
 
     //Return converted image
     return img2;
@@ -54,11 +58,17 @@ int zombie_init()
     if(zombie_background_make()!=0)
         return 1;
 
-    img_player=zombie_load_img(ZOMBIE_PLAYER_IMG);
+    img_player=zombie_load_img(ZOMBIE_PLAYER_IMG,1);
     if(img_player==NULL) return 1;
 
-    img_zombie=zombie_load_img(ZOMBIE_ZOMBIE_IMG);
+    img_zombie=zombie_load_img(ZOMBIE_ZOMBIE_IMG,1);
     if(img_zombie==NULL) return 1;
+
+    //Create player entity
+    player=(struct zent*)malloc(sizeof(struct zent));
+    if(player==NULL) return 1;
+    *player=zent_make(img_player,150.0,100.0,ZOMBIE_PLAYER_SIZE,ZOMBIE_PLAYER_SIZE,2);
+    player->qfr[0]=1;
 
     //Blit background to screen
     if(SDL_BlitSurface(background,NULL,screen,NULL)!=0)
@@ -73,6 +83,7 @@ int zombie_init()
 
 int zombie_clear()
 {
+    zent_clear(&player);
     SDL_FreeSurface(tile);
     SDL_FreeSurface(background);
     SDL_Quit();
@@ -91,7 +102,7 @@ int zombie_background_make()
     if(background==NULL) return 3;
 
     //Load background tile
-    tile=zombie_load_img(ZOMBIE_TILE_IMG);
+    tile=zombie_load_img(ZOMBIE_TILE_IMG,0);
     if(tile==NULL) return 3;
     r1=tile->clip_rect;
 
@@ -144,6 +155,18 @@ int main(int argc,char **argv)
         {
             //Pressing X button
             if(e1.type==SDL_QUIT) goto end;
+        }
+
+        if(zent_draw(player)!=0)
+        {
+            printf("Error while drawing entity.\n");
+            return 1;
+        }
+
+        if(SDL_Flip(screen)!=0)
+        {
+            printf("Error while updating screen.\n");
+            return 3;
         }
 
         //Ticks must last at least specified time

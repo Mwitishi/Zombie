@@ -23,6 +23,8 @@
 #define ZOMBIE_BPP 32
 #define ZOMBIE_TILE_SIZE 32
 #define ZOMBIE_TICK_MS 100
+#define ZOMBIE_PLAYER_SIZE 32
+#define ZOMBIE_ZOMBIE_SIZE 32
 
 //Global variable declarations
 #ifndef ZOMBIE_EXTERN
@@ -33,6 +35,7 @@ extern SDL_Surface *background;
 extern SDL_Surface *tile;
 extern SDL_Surface *img_player;
 extern SDL_Surface *img_zombie;
+extern struct zent *player;
 extern uint32_t tick;
 
 #endif

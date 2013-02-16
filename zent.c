@@ -33,7 +33,7 @@ int zent_draw(struct zent *ze1)
     //Null checking
     if(screen==NULL) return 1;
     if(background==NULL) return 1;
-    if(ze1==NULL) return 1;
+    if(ze1==NULL) return 0;
     if(ze1->img==NULL) return 1;
 
     //Initialize rectangles
@@ -50,6 +50,18 @@ int zent_draw(struct zent *ze1)
 
     //Update lastbox, next drawing will erase this one
     ze1->lastbox=r2;
+
+    return 0;
+}
+
+//Function for freeing memory and stuff
+int zent_clear(struct zent **ze1)
+{
+    if(ze1==NULL) return 1;
+    if(*ze1==NULL) return 0;
+
+    free(*ze1);
+    *ze1=NULL;
 
     return 0;
 }
