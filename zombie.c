@@ -60,6 +60,8 @@ int zombie_init()
     if(screen==NULL)
         return 1;
 
+    SDL_WM_SetCaption(ZOMBIE_NAME,NULL);
+
     //Load background
     if(zombie_background_make()!=0)
         return 1;
@@ -161,6 +163,113 @@ int zombie_boxes_make()
     return 0;
 }
 
+int zombie_event()
+{
+    SDL_Event e1;
+
+    //Event processing
+    while(SDL_PollEvent(&e1)!=0) {
+        //Pressing X button
+        if(e1.type==SDL_QUIT) return 1;
+
+        //Pressing a key
+        if(e1.type==SDL_KEYDOWN) {
+            //Left arrow key
+            if(e1.key.keysym.sym==SDLK_LEFT) {
+                //Change velocity
+                player->vx-=ZOMBIE_PLAYER_V;
+                //Change facing direction
+                if(player->vy==0&&player->vx!=0) {
+                    player->st&=0xfc;
+                    player->st|=0x03;
+                }
+            }
+
+            //Up arrow key
+            if(e1.key.keysym.sym==SDLK_UP) {
+                //Change velocity
+                player->vy-=ZOMBIE_PLAYER_V;
+                //Change facing direction
+                if(player->vx==0&&player->vy!=0) {
+                    player->st&=0xfc;
+                    player->st|=0x00;
+                }
+            }
+
+            //Right arrow key
+            if(e1.key.keysym.sym==SDLK_RIGHT) {
+                //Change velocity
+                player->vx+=ZOMBIE_PLAYER_V;
+                //Change facing direction
+                if(player->vy==0&&player->vx!=0) {
+                    player->st&=0xfc;
+                    player->st|=0x01;
+                }
+            }
+
+            //Down arrow key
+            if(e1.key.keysym.sym==SDLK_DOWN) {
+                //Change velocity
+                player->vy+=ZOMBIE_PLAYER_V;
+                //Change facing direction
+                if(player->vx==0&&player->vy!=0) {
+                    player->st&=0xfc;
+                    player->st|=0x02;
+                }
+            }
+        }
+
+        //Releasing a key
+        if(e1.type==SDL_KEYUP) {
+            //Left arrow key
+            if(e1.key.keysym.sym==SDLK_LEFT) {
+                //Change velocity
+                player->vx+=ZOMBIE_PLAYER_V;
+                //Change facing direction
+                if(player->vx>0) {
+                    player->st&=0xfc;
+                    player->st|=0x01;
+                }
+            }
+
+            //Up arrow key
+            if(e1.key.keysym.sym==SDLK_UP) {
+                //Change velocity
+                player->vy+=ZOMBIE_PLAYER_V;
+                //Change facing direction
+                if(player->vy>0) {
+                    player->st&=0xfc;
+                    player->st|=0x02;
+                }
+            }
+
+            //Right arrow key
+            if(e1.key.keysym.sym==SDLK_RIGHT) {
+                //Change velocity
+                player->vx-=ZOMBIE_PLAYER_V;
+                //Change facing direction
+                if(player->vx<0) {
+                    player->st&=0xfc;
+                    player->st|=0x03;
+                }
+            }
+
+            //Down arrow key
+            if(e1.key.keysym.sym==SDLK_DOWN) {
+                //Change velocity
+                player->vy-=ZOMBIE_PLAYER_V;
+                //Change facing direction
+                if(player->vy<0) {
+                    player->st&=0xfc;
+                    player->st|=0x00;
+                }
+            }
+        }
+    }
+
+    return 0;
+}
+
 int zombie_update()
 {
     if(player!=NULL)
@@ -204,107 +313,7 @@ int main(int argc,char **argv)
         //Store time of tick beginning
         t1=SDL_GetTicks();
 
-        //Event processing
-        while(SDL_PollEvent(&e1)!=0)
-        {
-            //Pressing X button
-            if(e1.type==SDL_QUIT) goto end;
-
-            //Pressing a key
-            if(e1.type==SDL_KEYDOWN)
-            {
-                //Left arrow key
-                if(e1.key.keysym.sym==SDLK_LEFT) {
-                    //Change velocity
-                    player->vx-=ZOMBIE_PLAYER_V;
-                    //Change facing direction
-                    if(player->vy==0&&player->vx!=0) {
-                        player->st&=0xfc;
-                        player->st|=0x03;
-                    }
-                }
-
-                //Up arrow key
-                if(e1.key.keysym.sym==SDLK_UP) {
-                    //Change velocity
-                    player->vy-=ZOMBIE_PLAYER_V;
-                    //Change facing direction
-                    if(player->vx==0&&player->vy!=0) {
-                        player->st&=0xfc;
-                        player->st|=0x00;
-                    }
-                }
-
-                //Right arrow key
-                if(e1.key.keysym.sym==SDLK_RIGHT) {
-                    //Change velocity
-                    player->vx+=ZOMBIE_PLAYER_V;
-                    //Change facing direction
-                    if(player->vy==0&&player->vx!=0) {
-                        player->st&=0xfc;
-                        player->st|=0x01;
-                    }
-                }
-
-                //Down arrow key
-                if(e1.key.keysym.sym==SDLK_DOWN) {
-                    //Change velocity
-                    player->vy+=ZOMBIE_PLAYER_V;
-                    //Change facing direction
-                    if(player->vx==0&&player->vy!=0) {
-                        player->st&=0xfc;
-                        player->st|=0x02;
-                    }
-                }
-            }
-
-            //Releasing a key
-            if(e1.type==SDL_KEYUP) {
-                //Left arrow key
-                if(e1.key.keysym.sym==SDLK_LEFT) {
-                    //Change velocity
-                    player->vx+=ZOMBIE_PLAYER_V;
-                    //Change facing direction
-                    if(player->vx>0) {
-                        player->st&=0xfc;
-                        player->st|=0x01;
-                    }
-                }
-
-                //Up arrow key
-                if(e1.key.keysym.sym==SDLK_UP) {
-                    //Change velocity
-                    player->vy+=ZOMBIE_PLAYER_V;
-                    //Change facing direction
-                    if(player->vy>0) {
-                        player->st&=0xfc;
-                        player->st|=0x02;
-                    }
-                }
-
-                //Right arrow key
-                if(e1.key.keysym.sym==SDLK_RIGHT) {
-                    //Change velocity
-                    player->vx-=ZOMBIE_PLAYER_V;
-                    //Change facing direction
-                    if(player->vx<0) {
-                        player->st&=0xfc;
-                        player->st|=0x03;
-                    }
-                }
-
-                //Down arrow key
-                if(e1.key.keysym.sym==SDLK_DOWN) {
-                    //Change velocity
-                    player->vy-=ZOMBIE_PLAYER_V;
-                    //Change facing direction
-                    if(player->vy<0) {
-                        player->st&=0xfc;
-                        player->st|=0x00;
-                    }
-                }
-            }
-        }
+        if(zombie_event()!=0) goto end;
 
         zombie_update();
 
