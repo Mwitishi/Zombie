@@ -67,7 +67,7 @@ struct zent{
 };
 
 //Declarations of functions in file zent.c
-struct zent zent_make(SDL_Surface*,float,float,int,int,int);
+struct zent zent_make(SDL_Surface*, float, float, int, int, int);
 int zent_draw(struct zent*);
 int zent_clear(struct zent**);
 
