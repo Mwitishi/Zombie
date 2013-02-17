@@ -1,3 +1,17 @@
+/*
+ *  File: zombie.h / Project: Zombie
+ *  Author: Mwitishi
+ *  This is the main include file for project Zombie.
+ *  All source files in the project include it.
+ *  All other include files (if any) are included here.
+ *  All external library includes are here.
+ *  Macros are defined here.
+ *  Extern declarations are here, but
+ *  global variables are declared in zombie.c.
+ *  The zent structure is defined here.
+ *  Declarations of functions are here.
+ */
+
 #ifndef ZOMBIE_H
 #define ZOMBIE_H
 
@@ -47,7 +61,7 @@
 #define ZOMBIE_TICK_MS 100
 #define ZOMBIE_MAX_TICK 16
 
-//Global variable declarations
+//Global variable declarations (macro defining avoids double declarations)
 #ifndef ZOMBIE_EXTERN
 #define ZOMBIE_EXTERN
 
@@ -74,7 +88,7 @@ struct zent{
     //Position with decimals
     float x;
     float y;
-    //Velocity woth decimals
+    //Velocity with decimals
     float vx;
     float vy;
     //Entity size

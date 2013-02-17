@@ -1,3 +1,14 @@
+/*
+ *  File: zent.c / Project: Zombie
+ *  Author: Mwitishi
+ *  This file contains functions for manipulating
+ *  zent structures, defined in zombie.h.
+ *  Function declarations, extern variables
+ *  and macros are in zombie.h.
+ *  zent structures contain information
+ *  about entities in the game Zombie.
+ */
+
 #include "zombie.h"
 
 //Function for creating a zent structure with specified values
@@ -9,6 +20,7 @@ struct zent zent_make(SDL_Surface *img, float x, float y, int w, int h, int tpf)
     ze1.img = img;
     ze1.x = x;
     ze1.y = y;
+    //Velocity must be set afterwards
     ze1.vx = 0;
     ze1.vy = 0;
     ze1.w = w;
