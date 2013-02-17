@@ -29,13 +29,17 @@ struct zent zent_make(SDL_Surface *img, float x, float y, int w, int h, int tpf)
         ze1.qfr[i1] = img->w / w;
 
     //Default hitbox: 1 rectangle, size of the entity
-    ze1.qhit = 1;
-    ze1.hitbox = (SDL_Rect*) malloc(sizeof(SDL_Rect));
-    //Hitbox positions measured from upperleft corner of the entity
-    ze1.hitbox[0].x=0;
-    ze1.hitbox[0].y=0;
-    ze1.hitbox[0].w=w;
-    ze1.hitbox[0].h=h;
+    ze1.hitbox = (SDL_Rect**) malloc(sizeof(SDL_Rect*) * ze1.qst);
+    ze1.qhit = (int*) malloc(sizeof(int) * ze1.qst);
+    for(i1 = 0 ; i1 < ze1.qst ; i1++) {
+        ze1.qhit[i1] = 1;
+        ze1.hitbox[i1] = (SDL_Rect*) malloc(sizeof(SDL_Rect));
+        //Hitbox positions measured from upperleft corner of the entity
+        ze1.hitbox[i1][0].x = 0;
+        ze1.hitbox[i1][0].y = 0;
+        ze1.hitbox[i1][0].w = w;
+        ze1.hitbox[i1][0].h = h;
+    }
 
     return ze1;
 }
@@ -93,20 +97,29 @@ int zent_clear(struct zent **ze1)
 int zent_collide(struct zent *ze1, struct zent *ze2)
 {
     int i1,i2;
+    SDL_Rect r1,r2;
 
     //If entities are NULL, assume there aren't collisions
     if(ze1 == NULL || ze2 == NULL ||
         ze1->hitbox == NULL || ze2->hitbox == NULL) return 0;
 
     //Loop through hitbox rectangles in both entities
-    for(i1 = 0 ; i1 < ze1->qhit ; i1++)
-        for(i2 = 0 ; i2 < ze2->qhit ; i2++)
+    for(i1 = 0 ; i1 < ze1->qhit[ze1->st] ; i1++)
+        for(i2 = 0 ; i2 < ze2->qhit[ze2->st] ; i2++)
         {
+            //Create hitboxes
+            r1 = ze1->hitbox[ze1->st][i1];
+            r1.x += (int) ze1->x;
+            r1.y += (int) ze1->y;
+            r2 = ze2->hitbox[ze2->st][i2];
+            r2.x += (int) ze2->x;
+            r2.y += (int) ze2->y;
+
             //If no collision, check next combination
-            if(ze1->hitbox[i1].x + ze1->hitbox[i1].w < ze2->hitbox[i2].x ||
-                ze1->hitbox[i1].x > ze2->hitbox[i2].x + ze2->hitbox[i2].w ||
-                ze1->hitbox[i1].y + ze1->hitbox[i1].h < ze2->hitbox[i2].y ||
-                ze1->hitbox[i1].y > ze2->hitbox[i2].y + ze2->hitbox[i2].h) continue;
+            if(r1.x + r1.w < r2.x ||
+                r1.x > r2.x + r2.w ||
+                r1.y + r1.h < r2.y ||
+                r1.y > r2.y + r2.h) continue;
 
             //If collision, return true
             return 1;

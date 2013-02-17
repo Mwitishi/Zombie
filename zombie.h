@@ -14,7 +14,7 @@
 //Basic macros
 #define ZOMBIE_NAME "Zombie by Mwitishi"
 #define ZOMBIE_VERSION "v0.2"
-#define DEBUGMODE 0
+#define DEBUGMODE 1
 
 //File and directory names
 #define ZOMBIE_IMG_FOLDER "imgs/"
@@ -78,9 +78,9 @@ struct zent{
     //Frame amounts (array, 1 entry per state)
     int *qfr;
     //Hitbox, as multiple rectangles
-    SDL_Rect *hitbox;
+    SDL_Rect **hitbox;
     //Amount of rectangles in hitbox
-    int qhit;
+    int *qhit;
 };
 
 //Declarations of functions in file zombie.c
@@ -96,5 +96,5 @@ int zombie_clear();
 struct zent zent_make(SDL_Surface*, float, float, int, int, int);
 int zent_draw(struct zent*);
 int zent_clear(struct zent**);
-
+int zent_collide(struct zent*, struct zent*);
 #endif

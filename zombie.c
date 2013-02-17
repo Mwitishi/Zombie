@@ -166,7 +166,7 @@ int zombie_background_make()
 //Place box entities randomly across the screen
 int zombie_boxes_make()
 {
-    int i1;
+    int i1,i2;
 
     //Initialize random seed
     srand(time(NULL));
@@ -179,8 +179,18 @@ int zombie_boxes_make()
         //Allocate memory & create box
         boxes[i1] = (struct zent*) malloc(sizeof(struct zent));
         if(boxes[i1] == NULL) return 1;
-        *(boxes[i1]) = zent_make(img_box, rand() % (ZOMBIE_SCREEN_X-ZOMBIE_BOX_SIZE),
-            rand() % (ZOMBIE_SCREEN_Y-ZOMBIE_BOX_SIZE), ZOMBIE_BOX_SIZE, ZOMBIE_BOX_SIZE, 1);
+
+        while(1) {
+            *(boxes[i1]) = zent_make(img_box, rand() % (ZOMBIE_SCREEN_X-ZOMBIE_BOX_SIZE),
+                rand() % (ZOMBIE_SCREEN_Y-ZOMBIE_BOX_SIZE), ZOMBIE_BOX_SIZE, ZOMBIE_BOX_SIZE, 1);
+
+            if(zent_collide(player, boxes[i1])) continue;
+            for(i2 = 0 ; i2 < i1 ; i2++)
+                if(zent_collide(boxes[i1], boxes[i2])) break;
+            if(i2 != i1) continue;
+
+            break;
+        }
     }
 
     return 0;
@@ -252,7 +262,7 @@ int zombie_event()
             //Left arrow key
             if(e1.key.keysym.sym == SDLK_LEFT) {
                 //Change velocity
-                player->vx += ZOMBIE_PLAYER_V;
+                if(player->vx < 0) player->vx += ZOMBIE_PLAYER_V;
 
                 //Change facing direction
                 if(player->vx > 0) {
@@ -264,7 +274,7 @@ int zombie_event()
             //Up arrow key
             if(e1.key.keysym.sym == SDLK_UP) {
                 //Change velocity
-                player->vy += ZOMBIE_PLAYER_V;
+                if(player->vy < 0) player->vy += ZOMBIE_PLAYER_V;
 
                 //Change facing direction
                 if(player->vy > 0) {
@@ -276,7 +286,7 @@ int zombie_event()
             //Right arrow key
             if(e1.key.keysym.sym == SDLK_RIGHT) {
                 //Change velocity
-                player->vx -= ZOMBIE_PLAYER_V;
+                if(player->vx > 0) player->vx -= ZOMBIE_PLAYER_V;
 
                 //Change facing direction
                 if(player->vx < 0) {
@@ -288,7 +298,7 @@ int zombie_event()
             //Down arrow key
             if(e1.key.keysym.sym == SDLK_DOWN) {
                 //Change velocity
-                player->vy -= ZOMBIE_PLAYER_V;
+                if(player->vy > 0) player->vy -= ZOMBIE_PLAYER_V;
 
                 //Change facing direction
                 if(player->vy < 0) {
@@ -305,11 +315,27 @@ int zombie_event()
 //Update entity positions and stuff
 int zombie_update()
 {
+    int i1;
+
     //Move player if he exists
     if(player != NULL)
     {
         player->x += player->vx;
         player->y += player->vy;
+    }
+
+    //Collisions: player-box
+    for(i1 = 0 ; i1 < ZOMBIE_BOX_QUAN ; i1++) {
+        //Inexistent boxes don't count
+        if(boxes[i1] == NULL) continue;
+
+        //If collision, stop player
+        if(zent_collide(player, boxes[i1])) {
+            player->x -= player->vx;
+            player->y -= player->vy;
+            player->vx = 0;
+            player->vy = 0;
+        }
     }
 
     return 0;
