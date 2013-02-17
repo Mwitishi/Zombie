@@ -297,6 +297,9 @@ int zombie_event()
                     player->st |= 0x02;
                 }
             }
+
+            if(e1.key.keysym.sym == SDLK_SPACE)
+                zombie_shoot();
         }
 
         //Releasing a key
@@ -366,6 +369,14 @@ int zombie_update()
         player->y += player->vy;
     }
 
+    for(i1 = 0 ; i1 < ZOMBIE_SHOT_QUAN ; i1++)
+    {
+        if(shots[i1] == NULL) continue;
+
+        shots[i1]->x += shots[i1]->vx;
+        shots[i1]->y += shots[i1]->vy;
+    }
+
     //Collisions: player-box
     for(i1 = 0 ; i1 < ZOMBIE_BOX_QUAN ; i1++) {
         //Inexistent boxes don't count
@@ -387,6 +398,7 @@ int zombie_update()
 int zombie_shoot()
 {
     int i1;
+    float x = 0, y = 0, vx = 0, vy = 0;
 
     //Null checking
     if(shots == NULL) return 1;
@@ -401,12 +413,47 @@ int zombie_shoot()
     //If array full
     if(i1 == ZOMBIE_SHOT_QUAN) return 0;
 
+    //Calculate position & velocity
+    //Facing up
+    if((player->st & 0x03) == 0) {
+        x = player->x + 27;
+        y = player->y - ZOMBIE_SHOT_SIZE;
+        vx = 0;
+        vy = -ZOMBIE_SHOT_V;
+    }
+
+    //Facing right
+    if((player->st & 0x03) == 1) {
+        x = player->x + ZOMBIE_PLAYER_SIZE;
+        y = player->y + 27;
+        vx = ZOMBIE_SHOT_V;
+        vy = 0;
+    }
+
+    //Facing down
+    if((player->st & 0x03) == 2) {
+        x = player->x + 3;
+        y = player->y + ZOMBIE_PLAYER_SIZE;
+        vx = 0;
+        vy = ZOMBIE_SHOT_V;
+    }
+
+    //Facing left
+    if((player->st & 0x03) == 3) {
+        x = player->x + ZOMBIE_SHOT_SIZE;
+        y = player->y + 3;
+        vx = -ZOMBIE_SHOT_V;
+        vy = 0;
+    }
+
     //Memory allocating
     shots[i1] = (struct zent*) malloc(sizeof(struct zent));
     if(shots[i1] == NULL) return 1;
 
     //Create the shot
-    *(shots[i1]) = zent_make(img_shot, player->x + 26, player->y - ZOMBIE_SHOT_SIZE , ZOMBIE_SHOT_SIZE, ZOMBIE_SHOT_SIZE, ZOMBIE_SHOT_TPF);
+    *(shots[i1]) = zent_make(img_shot, x, y, ZOMBIE_SHOT_SIZE, ZOMBIE_SHOT_SIZE, ZOMBIE_SHOT_TPF);
+    shots[i1]->vx = vx;
+    shots[i1]->vy = vy;
 
     //Start reloading
     reload = ZOMBIE_RELOAD_TIME;

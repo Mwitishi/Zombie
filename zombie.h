@@ -53,7 +53,7 @@
 #define ZOMBIE_PLAYER_V 3.5
 #define ZOMBIE_PLAYER_FDIR_V 2
 #define ZOMBIE_ZOMBIE_V 2.5
-#define ZOMBIE_SHOT_V 6
+#define ZOMBIE_SHOT_V 10
 #define ZOMBIE_PLAYER_TPF 2
 #define ZOMBIE_ZOMBIE_TPF 1
 #define ZOMBIE_BOX_TPF 1
@@ -115,6 +115,7 @@ int zombie_background_make();
 int zombie_boxes_make();
 int zombie_event();
 int zombie_update();
+int zombie_shoot();
 int zombie_clear();
 
 //Declarations of functions in file zent.c
