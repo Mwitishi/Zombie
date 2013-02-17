@@ -383,6 +383,37 @@ int zombie_update()
     return 0;
 }
 
+//Function for shooting (when pressing SPACE)
+int zombie_shoot()
+{
+    int i1;
+
+    //Null checking
+    if(shots == NULL) return 1;
+    if(player == NULL) return 0;
+    //If reloading
+    if(reload != 0) return 0;
+
+    //Getting free position in array
+    for(i1 = 0 ; i1 < ZOMBIE_SHOT_QUAN ; i1++)
+        if(shots[i1] == NULL) break;
+
+    //If array full
+    if(i1 == ZOMBIE_SHOT_QUAN) return 0;
+
+    //Memory allocating
+    shots[i1] = (struct zent*) malloc(sizeof(struct zent));
+    if(shots[i1] == NULL) return 1;
+
+    //Create the shot
+    *(shots[i1]) = zent_make(img_shot, player->x + 26, player->y - ZOMBIE_SHOT_SIZE , ZOMBIE_SHOT_SIZE, ZOMBIE_SHOT_SIZE, ZOMBIE_SHOT_TPF);
+
+    //Start reloading
+    reload = ZOMBIE_RELOAD_TIME;
+
+    return 0;
+}
+
 //Final stuff
 int zombie_clear()
 {
