@@ -256,7 +256,7 @@ int zombie_event()
                 player->vx -= ZOMBIE_PLAYER_V;
 
                 //Change facing direction
-                if(player->vy == 0 && player->vx != 0) {
+                if(player->vy == 0) {
                     player->st &= 0xfc;
                     player->st |= 0x03;
                 }
@@ -268,7 +268,7 @@ int zombie_event()
                 player->vy -= ZOMBIE_PLAYER_V;
 
                 //Change facing direction
-                if(player->vx == 0 && player->vy != 0) {
+                if(player->vx == 0) {
                     player->st &= 0xfc;
                     player->st |= 0x00;
                 }
@@ -280,7 +280,7 @@ int zombie_event()
                 player->vx += ZOMBIE_PLAYER_V;
 
                 //Change facing direction
-                if(player->vy == 0 && player->vx != 0) {
+                if(player->vy == 0) {
                     player->st &= 0xfc;
                     player->st |= 0x01;
                 }
@@ -292,7 +292,7 @@ int zombie_event()
                 player->vy += ZOMBIE_PLAYER_V;
 
                 //Change facing direction
-                if(player->vx == 0 && player->vy != 0) {
+                if(player->vx == 0) {
                     player->st &= 0xfc;
                     player->st |= 0x02;
                 }
@@ -310,7 +310,7 @@ int zombie_event()
                 if(player->vx < 0) player->vx += ZOMBIE_PLAYER_V;
 
                 //Change facing direction
-                if(player->vx > 0) {
+                if(player->vy < 0) {
                     player->st &= 0xfc;
                     player->st |= 0x01;
                 }
@@ -322,7 +322,7 @@ int zombie_event()
                 if(player->vy < 0) player->vy += ZOMBIE_PLAYER_V;
 
                 //Change facing direction
-                if(player->vy > 0) {
+                if(player->vy < 0) {
                     player->st &= 0xfc;
                     player->st |= 0x02;
                 }
@@ -360,7 +360,7 @@ int zombie_event()
 //Update entity positions and stuff
 int zombie_update()
 {
-    int i1;
+    int i1,i2;
 
     //Move player if he exists
     if(player != NULL)
@@ -387,19 +387,28 @@ int zombie_update()
         }
     }
 
-    //Collisions: player-box
+    //Collisions: boxes
     for(i1 = 0 ; i1 < ZOMBIE_BOX_QUAN ; i1++) {
         //Inexistent boxes don't count
         if(boxes[i1] == NULL) continue;
 
-        //If collision, stop player
+        //If collision with player, stop player
         if(zent_collide(player, boxes[i1])) {
             player->x -= player->vx;
             player->y -= player->vy;
             player->vx = 0;
             player->vy = 0;
         }
+
+        //If collision with shot, delete shot
+        for(i2 = 0 ; i2 < ZOMBIE_SHOT_QUAN ; i2++)
+            if(zent_collide(boxes[i1], shots[i2]) != 0) zent_clear(shots + i2);
     }
+
+    for(i1 = 0 ; i1 < ZOMBIE_SHOT_QUAN ; i1++)
+        if(zent_collide(shots[i1], player) != 0) {
+            zent_clear(shots + i1);
+        }
 
     return 0;
 }

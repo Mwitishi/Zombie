@@ -76,9 +76,9 @@ int zent_draw(struct zent *ze1)
     r2.y = (int) (ze1->y);
 
     //Do not draw if unneccesary
-    if(r2.x == ze1->lastbox.x && r2.y == ze1->lastbox.y &&
-        (tick / ze1->tpf) % ze1->qfr[ze1->st] ==
-        ((tick - 1) / ze1->tpf) % ze1->qfr[ze1->st]) return 0;
+//  if(r2.x == ze1->lastbox.x && r2.y == ze1->lastbox.y &&
+//      (tick / ze1->tpf) % ze1->qfr[ze1->st] ==
+//      ((tick - 1) / ze1->tpf) % ze1->qfr[ze1->st]) return 0;
 
     //Empty previous position, draw at new position, check error
     if((ze1->lastbox.x != -1 &&
