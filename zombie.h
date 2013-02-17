@@ -13,7 +13,7 @@
 
 //Basic macros
 #define ZOMBIE_NAME "Zombie by Mwitishi"
-#define ZOMBIE_VERSION "v0.2"
+#define ZOMBIE_VERSION "v0.3"
 #define DEBUGMODE 0
 
 //File and directory names
@@ -32,11 +32,18 @@
 #define ZOMBIE_PLAYER_SIZE 32
 #define ZOMBIE_ZOMBIE_SIZE 32
 #define ZOMBIE_BOX_SIZE 32
+#define ZOMBIE_SHOT_SIZE 2
 #define ZOMBIE_ZOMBIE_QUAN 5
 #define ZOMBIE_BOX_QUAN 5
+#define ZOMBIE_SHOT_QUAN 10
 #define ZOMBIE_PLAYER_V 3.5
 #define ZOMBIE_PLAYER_FDIR_V 2
 #define ZOMBIE_ZOMBIE_V 2.5
+#define ZOMBIE_SHOT_V 6
+#define ZOMBIE_PLAYER_TPF 2
+#define ZOMBIE_ZOMBIE_TPF 1
+#define ZOMBIE_BOX_TPF 1
+#define ZOMBIE_SHOT_TPF 1
 #define ZOMBIE_TICK_MS 100
 #define ZOMBIE_MAX_TICK 16
 
@@ -54,6 +61,7 @@ extern struct zent *player;
 extern struct zent **boxes;
 extern struct zent **shots;
 extern uint32_t tick;
+extern int reload;
 
 #endif
 

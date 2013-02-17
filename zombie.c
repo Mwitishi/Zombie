@@ -16,8 +16,9 @@ SDL_Surface *img_shot = NULL;
 struct zent *player = NULL;
 struct zent **boxes = NULL;
 struct zent **shots = NULL;
-//Counts current amount of ticks (for animations)
+//Counters
 uint32_t tick = 0;
+int reload = 0;
 
 //Function for loading an image and preparing it
 SDL_Surface *zombie_load_img(char *name, char alpha)
@@ -104,12 +105,15 @@ int zombie_init()
     img_box = zombie_load_img(ZOMBIE_BOX_IMG ,0);
     if(img_box == NULL) return 1;
 
+    img_shot = zombie_load_img(ZOMBIE_SHOT_IMG, 0);
+    if(img_shot == NULL) return 1;
+
     if(DEBUGMODE) printf("Images loaded successfully. Trying to create player.\n");
 
     //Create player entity
     player = (struct zent*) malloc(sizeof(struct zent));
     if(player == NULL) return 1;
-    *player = zent_make(img_player, 150.0, 100.0, ZOMBIE_PLAYER_SIZE, ZOMBIE_PLAYER_SIZE, 2);
+    *player = zent_make(img_player, 150.0, 100.0, ZOMBIE_PLAYER_SIZE, ZOMBIE_PLAYER_SIZE, ZOMBIE_PLAYER_TPF);
     for(i1 = 0 ; i1 < 4 ; i1++) {
         player->qfr[i1] = 1;
 //      player->qhit[i1] = 2;
@@ -129,7 +133,15 @@ int zombie_init()
     if(boxes == NULL) return 1;
     if(zombie_boxes_make() != 0) return 1;
 
-    if(DEBUGMODE) printf("Boxes created successfully. Trying to draw background.\n");
+    if(DEBUGMODE) printf("Boxes created successfully. Trying to create shots.\n");
+
+    //Create shots array, leave it empty
+    shots = (struct zent**) malloc(sizeof(struct zent*) * ZOMBIE_SHOT_QUAN);
+    if(shots == NULL) return 1;
+    for(i1 = 0 ; i1 < ZOMBIE_SHOT_QUAN ; i1++)
+        shots[i1] = NULL;
+
+    if(DEBUGMODE) printf("Shots created successfully. Trying to draw background.\n");
 
     //Blit background to screen
     if(SDL_BlitSurface(background, NULL, screen, NULL) != 0)
@@ -360,12 +372,21 @@ int zombie_clear()
 
     //Free entity memory
     zent_clear(&player);
+
     for(i1 = 0 ; i1 < ZOMBIE_BOX_QUAN ; i1++)
         zent_clear(boxes + i1);
+
     free(boxes);
     boxes = NULL;
 
+    for(i1 = 0 ; i1 < ZOMBIE_SHOT_QUAN ; i1++)
+        zent_clear(shots + i1);
+
+    free(shots);
+    shots = NULL;
+
     //Free images
+    SDL_FreeSurface(img_shot);
     SDL_FreeSurface(img_player);
     SDL_FreeSurface(img_zombie);
     SDL_FreeSurface(img_box);
@@ -440,6 +461,7 @@ int main(int argc, char **argv)
         //Ticks must last at least specified time
         while(SDL_GetTicks() - t1 < ZOMBIE_TICK_MS);
         tick = (tick + 1) % ZOMBIE_MAX_TICK;
+        if(reload > 0) reload--;
     }
 
 end:
