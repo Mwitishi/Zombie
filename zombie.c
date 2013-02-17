@@ -108,7 +108,17 @@ int zombie_init()
     player = (struct zent*) malloc(sizeof(struct zent));
     if(player == NULL) return 1;
     *player = zent_make(img_player, 150.0, 100.0, ZOMBIE_PLAYER_SIZE, ZOMBIE_PLAYER_SIZE, 2);
-    for(i1 = 0 ; i1 < 4 ; i1++) player->qfr[i1] = 1;
+    for(i1 = 0 ; i1 < 4 ; i1++) {
+        player->qfr[i1] = 1;
+//      player->qhit[i1] = 2;
+//      free(player->hitbox[i1]);
+//      player->hitbox[i1] = (SDL_Rect*) malloc(sizeof(SDL_Rect) * 2);
+    }
+
+//  player->hitbox[0][0].x = 0; player->hitbox[0][0].y = 18;
+//  player->hitbox[0][0].w = 32; player->hitbox[0][0].h = 14;
+//  player->hitbox[0][1].x = 24; player->hitbox[0][1].y = 0;
+//  player->hitbox[0][1].w = 8;  player->hitbox[0][1].h = 18;
 
     if(DEBUGMODE) printf("Player created successfully. Trying to create boxes.\n");
 
