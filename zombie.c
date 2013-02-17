@@ -1,3 +1,18 @@
+/*
+ *  File: zombie.c / Project: Zombie
+ *  Author: Mwitishi
+ *  This file contains the main function and other code chunks
+ *  put in separate functions for convenience.
+ *  Declarations, includes and macros are in zombie.h.
+ *  Global variables of the program are declared here
+ *  but extern declarations are in zombie.h.
+ *  Video, keyboard and audio are managed using
+ *  SDL library, freely distributed.
+ *  This is C, not C++.
+ *  Tested under Ubuntu (with gcc) and Windows
+ *  (cross-compiled in Ubuntu using MinGW).
+ */
+
 //This definition avoids declaring extern variables
 #define ZOMBIE_EXTERN
 
@@ -200,14 +215,17 @@ int zombie_boxes_make()
 
     //Loop through array
     for(i1 = 0 ; i1 < ZOMBIE_BOX_QUAN ; i1++) {
-        //Allocate memory & create box
+        //Allocate memory
         boxes[i1] = (struct zent*) malloc(sizeof(struct zent));
         if(boxes[i1] == NULL) return 1;
 
+        //Try until finding a free position
         while(1) {
+            //Create box
             *(boxes[i1]) = zent_make(img_box, rand() % (ZOMBIE_SCREEN_X-ZOMBIE_BOX_SIZE),
                 rand() % (ZOMBIE_SCREEN_Y-ZOMBIE_BOX_SIZE), ZOMBIE_BOX_SIZE, ZOMBIE_BOX_SIZE, 1);
 
+            //Check for collisions
             if(zent_collide(player, boxes[i1])) continue;
             for(i2 = 0 ; i2 < i1 ; i2++)
                 if(zent_collide(boxes[i1], boxes[i2])) break;
@@ -370,18 +388,22 @@ int zombie_clear()
 {
     int i1;
 
-    //Free entity memory
+    //Free player
     zent_clear(&player);
 
+    //Free each box
     for(i1 = 0 ; i1 < ZOMBIE_BOX_QUAN ; i1++)
         zent_clear(boxes + i1);
 
+    //Free box array
     free(boxes);
     boxes = NULL;
 
+    //Free each shot
     for(i1 = 0 ; i1 < ZOMBIE_SHOT_QUAN ; i1++)
         zent_clear(shots + i1);
 
+    //Free shot array
     free(shots);
     shots = NULL;
 
@@ -392,11 +414,14 @@ int zombie_clear()
     SDL_FreeSurface(img_box);
     SDL_FreeSurface(tile);
     SDL_FreeSurface(background);
+
+    //Quit SDL
     SDL_Quit();
 
     return 0;
 }
 
+//Main function. Parameters are only for info display.
 int main(int argc, char **argv)
 {
     int i1;
@@ -451,6 +476,16 @@ int main(int argc, char **argv)
             }
         }
 
+        //Entity drawing: shots
+        for(i1 = 0 ; i1 < ZOMBIE_SHOT_QUAN ; i1++) {
+            if(shots[i1] == NULL) continue;
+
+            if(zent_draw(shots[i1]) != 0) {
+                printf("Error while drawing entity.\n");
+                return 1;
+            }
+        }
+
         //Update screen
         if(SDL_Flip(screen) != 0)
         {
@@ -461,6 +496,7 @@ int main(int argc, char **argv)
         //Ticks must last at least specified time
         while(SDL_GetTicks() - t1 < ZOMBIE_TICK_MS);
         tick = (tick + 1) % ZOMBIE_MAX_TICK;
+        //Reloading time decreased
         if(reload > 0) reload--;
     }
 

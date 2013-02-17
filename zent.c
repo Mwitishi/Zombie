@@ -134,7 +134,7 @@ int zent_collide(struct zent *ze1, struct zent *ze2)
     for(i1 = 0 ; i1 < ze1->qhit[ze1->st] ; i1++)
         for(i2 = 0 ; i2 < ze2->qhit[ze2->st] ; i2++)
         {
-            //Create hitboxes
+            //Create hitboxes, set positions relative to screen position
             r1 = ze1->hitbox[ze1->st][i1];
             r1.x += (int) ze1->x;
             r1.y += (int) ze1->y;
