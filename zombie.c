@@ -369,12 +369,22 @@ int zombie_update()
         player->y += player->vy;
     }
 
+    //Move shots
     for(i1 = 0 ; i1 < ZOMBIE_SHOT_QUAN ; i1++)
     {
         if(shots[i1] == NULL) continue;
 
+        //Update position
         shots[i1]->x += shots[i1]->vx;
         shots[i1]->y += shots[i1]->vy;
+
+        //If shot goes out of screen
+        if(shots[i1]->x < 0 || shots[i1]->x > ZOMBIE_SCREEN_X - ZOMBIE_SHOT_SIZE ||
+            shots[i1]->y < 0 || shots[i1]->y > ZOMBIE_SCREEN_Y - ZOMBIE_SHOT_SIZE) {
+
+            //Delete shot
+            zent_clear(shots + i1);
+        }
     }
 
     //Collisions: player-box
