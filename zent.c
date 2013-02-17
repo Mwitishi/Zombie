@@ -82,9 +82,36 @@ int zent_draw(struct zent *ze1)
 //Function for freeing memory and stuff
 int zent_clear(struct zent **ze1)
 {
+    int i1;
+
     //If null pointers
     if(ze1 == NULL) return 1;
     if(*ze1 == NULL) return 0;
+
+    //Free hitbox array
+    if((*ze1)->hitbox != NULL) {
+        for(i1 = 0 ; i1 < (*ze1)->qst ; i1++) {
+            if((*ze1)->hitbox[i1] == NULL) continue;
+
+            free((*ze1)->hitbox[i1]);
+            (*ze1)->hitbox[i1] = NULL;
+        }
+
+        free((*ze1)->hitbox);
+        (*ze1)->hitbox = NULL;
+    }
+
+    //Free qhit array
+    if((*ze1)->qhit != NULL) {
+        free((*ze1)->qhit);
+        (*ze1)->qhit = NULL;
+    }
+
+    //Free qfr array
+    if((*ze1)->qfr != NULL) {
+        free((*ze1)->qfr);
+        (*ze1)->qfr = NULL;
+    }
 
     //Free memory, set pointer to NULL
     free(*ze1);

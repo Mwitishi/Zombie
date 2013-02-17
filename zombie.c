@@ -11,9 +11,11 @@ SDL_Surface *tile = NULL;
 SDL_Surface *img_player = NULL;
 SDL_Surface *img_zombie = NULL;
 SDL_Surface *img_box = NULL;
+SDL_Surface *img_shot = NULL;
 //Entities
 struct zent *player = NULL;
 struct zent **boxes = NULL;
+struct zent **shots = NULL;
 //Counts current amount of ticks (for animations)
 uint32_t tick = 0;
 
