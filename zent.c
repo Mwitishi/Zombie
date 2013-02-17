@@ -100,6 +100,8 @@ int zent_clear(struct zent **ze1)
     if(ze1 == NULL) return 1;
     if(*ze1 == NULL) return 0;
 
+    SDL_BlitSurface(background, &((*ze1)->lastbox), screen, &((*ze1)->lastbox));
+
     //Free hitbox array
     if((*ze1)->hitbox != NULL) {
         for(i1 = 0 ; i1 < (*ze1)->qst ; i1++) {
