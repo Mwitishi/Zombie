@@ -29,6 +29,7 @@ SDL_Surface *img_box = NULL;
 SDL_Surface *img_shot = NULL;
 //Entities
 struct zent *player = NULL;
+struct zent **zombies = NULL;
 struct zent **boxes = NULL;
 struct zent **shots = NULL;
 //Counters
@@ -141,7 +142,14 @@ int zombie_init()
 //  player->hitbox[0][1].x = 24; player->hitbox[0][1].y = 0;
 //  player->hitbox[0][1].w = 8;  player->hitbox[0][1].h = 18;
 
-    if(DEBUGMODE) printf("Player created successfully. Trying to create boxes.\n");
+    if(DEBUGMODE) printf("Player created successfully. Trying to create zombies.\n");
+
+    //Create zombies array (filling done in main loop)
+    zombies = (struct zent**) malloc(sizeof(struct zent*) * ZOMBIE_ZOMBIE_QUAN);
+    if(zombies == NULL) return 1;
+    for(i1 = 0 ; i1 < ZOMBIE_ZOMBIE_QUAN ; i1++) zombies[i1] = NULL;
+
+    if(DEBUGMODE) printf("Zombies created successfully. Trying to create boxes.\n");
 
     //Create boxes array & fill
     boxes = (struct zent**) malloc(sizeof(struct zent*) * ZOMBIE_BOX_QUAN);
@@ -310,7 +318,7 @@ int zombie_event()
                 if(player->vx < 0) player->vx += ZOMBIE_PLAYER_V;
 
                 //Change facing direction
-                if(player->vy < 0) {
+                if(player->vx < 0) {
                     player->st &= 0xfc;
                     player->st |= 0x01;
                 }
@@ -369,9 +377,16 @@ int zombie_update()
         player->y += player->vy;
     }
 
+    //Move zombies (AI can only alter velocity)
+    for(i1 = 0 ; i1 < ZOMBIE_ZOMBIE_QUAN ; i1++) {
+        if(zombies[i1] == NULL) continue;
+
+        zombies[i1]->x += zombies[i1]->vx;
+        zombies[i1]->y += zombies[i1]->vy;
+    }
+
     //Move shots
-    for(i1 = 0 ; i1 < ZOMBIE_SHOT_QUAN ; i1++)
-    {
+    for(i1 = 0 ; i1 < ZOMBIE_SHOT_QUAN ; i1++) {
         if(shots[i1] == NULL) continue;
 
         //Update position
@@ -381,7 +396,6 @@ int zombie_update()
         //If shot goes out of screen
         if(shots[i1]->x < 0 || shots[i1]->x > ZOMBIE_SCREEN_X - ZOMBIE_SHOT_SIZE ||
             shots[i1]->y < 0 || shots[i1]->y > ZOMBIE_SCREEN_Y - ZOMBIE_SHOT_SIZE) {
-
             //Delete shot
             zent_clear(shots + i1);
         }
@@ -409,6 +423,40 @@ int zombie_update()
         if(zent_collide(shots[i1], player) != 0) {
             zent_clear(shots + i1);
         }
+
+    return 0;
+}
+
+int zombie_draw()
+{
+    int i1;
+
+    //Entity drawing: player
+    if(zent_draw(player) != 0) return 1;
+
+    //Entity drawing: zombies
+    for(i1 = 0 ; i1 < ZOMBIE_ZOMBIE_QUAN ; i1++) {
+        if(zombies[i1] == NULL) continue;
+
+        if(zent_draw(zombies[i1]) != 0) return 1;
+    }
+
+    //Entity drawing: boxes
+    for(i1 = 0 ; i1 < ZOMBIE_BOX_QUAN ; i1++) {
+        if(boxes[i1] == NULL) continue;
+
+        if(zent_draw(boxes[i1]) != 0) return 1;
+    }
+
+    //Entity drawing: shots
+    for(i1 = 0 ; i1 < ZOMBIE_SHOT_QUAN ; i1++) {
+        if(shots[i1] == NULL) continue;
+
+        if(zent_draw(shots[i1]) != 0) return 1;
+    }
+
+    //Update screen
+    if(SDL_Flip(screen) != 0) return 1;
 
     return 0;
 }
@@ -488,6 +536,14 @@ int zombie_clear()
     //Free player
     zent_clear(&player);
 
+    //Free each zombie
+    for(i1 = 0 ; i1 < ZOMBIE_ZOMBIE_QUAN ; i1++)
+        zent_clear(zombies + i1);
+
+    //Free zombie array
+    free(zombies);
+    zombies = NULL;
+
     //Free each box
     for(i1 = 0 ; i1 < ZOMBIE_BOX_QUAN ; i1++)
         zent_clear(boxes + i1);
@@ -521,7 +577,6 @@ int zombie_clear()
 //Main function. Parameters are only for info display.
 int main(int argc, char **argv)
 {
-    int i1;
     uint32_t t1;
 
     //Print game data
@@ -541,7 +596,7 @@ int main(int argc, char **argv)
     if(zombie_init() != 0)
     {
         printf("Error during initializing.\n");
-        return 1;
+        goto end;
     }
 
     //Main loop
@@ -556,38 +611,9 @@ int main(int argc, char **argv)
         //Update positions
         zombie_update();
 
-        //Entity drawing: player
-        if(zent_draw(player) != 0)
-        {
-            printf("Error while drawing entity.\n");
-            return 1;
-        }
-
-        //Entity drawing: boxes
-        for(i1 = 0 ; i1 < ZOMBIE_BOX_QUAN ; i1++) {
-            if(boxes[i1] == NULL) continue;
-
-            if(zent_draw(boxes[i1]) != 0) {
-                printf("Error while drawing entity.\n");
-                return 1;
-            }
-        }
-
-        //Entity drawing: shots
-        for(i1 = 0 ; i1 < ZOMBIE_SHOT_QUAN ; i1++) {
-            if(shots[i1] == NULL) continue;
-
-            if(zent_draw(shots[i1]) != 0) {
-                printf("Error while drawing entity.\n");
-                return 1;
-            }
-        }
-
-        //Update screen
-        if(SDL_Flip(screen) != 0)
-        {
-            printf("Error while updating screen.\n");
-            return 3;
+        if(zombie_draw() != 0) {
+            printf("Error while drawing screen.\n");
+            goto end;
         }
 
         //Ticks must last at least specified time

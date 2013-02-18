@@ -73,6 +73,7 @@ extern SDL_Surface *img_player;
 extern SDL_Surface *img_zombie;
 extern SDL_Surface *img_box;
 extern struct zent *player;
+extern struct zent **zombies;
 extern struct zent **boxes;
 extern struct zent **shots;
 extern uint32_t tick;
