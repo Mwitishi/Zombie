@@ -251,7 +251,7 @@ int zombie_boxes_make()
 //Function for generating zombies, called continuously
 int zombie_zombies_make()
 {
-    int i1;
+    int i1,i2,i3;
 
     //Loop through array, fill empty places
     for(i1 = 0 ; i1 < ZOMBIE_ZOMBIE_QUAN ; i1++) {
@@ -265,10 +265,21 @@ int zombie_zombies_make()
         zombies[i1] = (struct zent*) malloc(sizeof(struct zent));
         if(zombies[i1] == NULL) return 1;
 
-        //Make zombies, place randomly across right edge
-        *(zombies[i1]) = zent_make(img_zombie, ZOMBIE_SCREEN_X - ZOMBIE_ZOMBIE_SIZE,
-            rand() % (ZOMBIE_SCREEN_Y - ZOMBIE_ZOMBIE_SIZE),
-            ZOMBIE_ZOMBIE_SIZE, ZOMBIE_ZOMBIE_SIZE, ZOMBIE_ZOMBIE_TPF);
+        //Attempt to create until finding free space
+        for(i2 = 0 ; i2 < ZOMBIE_GEN_TRY ; i2++) {
+            //Make zombies, place randomly across right edge
+            *(zombies[i1]) = zent_make(img_zombie, ZOMBIE_SCREEN_X - ZOMBIE_ZOMBIE_SIZE,
+                rand() % (ZOMBIE_SCREEN_Y - ZOMBIE_ZOMBIE_SIZE),
+                ZOMBIE_ZOMBIE_SIZE, ZOMBIE_ZOMBIE_SIZE, ZOMBIE_ZOMBIE_TPF);
+
+            //Check collision
+            if(zent_collide(player, zombies[i1]) != 0) continue;
+            for(i3 = 0 ; i3 < ZOMBIE_ZOMBIE_QUAN ; i3++)
+                if(zent_collide(zombies[i3], zombies[i1]) != 0 ) break;
+            if(i3 != i1) continue;
+
+            break;
+        }
     }
 
     return 0;
