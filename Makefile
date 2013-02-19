@@ -7,7 +7,7 @@
 # win - Windows compiling, using MinGW under Ubuntu
 
 # Source & header files
-CSOURCE=zombie.c zent.c
+CSOURCE=zombie.c zent.c zia.c
 CHEADER=zombie.h
 
 #Compilation for Ubuntu
