@@ -453,15 +453,49 @@ int zombie_update()
             player->vy = 0;
         }
 
+        //If collision with zombie, stop zombie
+        for(i2 = 0 ; i2 < ZOMBIE_ZOMBIE_QUAN ; i2++)
+           if(zent_collide(boxes[i1], zombies[i2]) != 0) {
+                zombies[i2]->x -= zombies[i2]->vx;
+                zombies[i2]->y -= zombies[i2]->vy;
+                zombies[i2]->vx = 0;
+                zombies[i2]->vy = 0;
+            }
+
         //If collision with shot, delete shot
         for(i2 = 0 ; i2 < ZOMBIE_SHOT_QUAN ; i2++)
             if(zent_collide(boxes[i1], shots[i2]) != 0) zent_clear(shots + i2);
     }
 
-    for(i1 = 0 ; i1 < ZOMBIE_SHOT_QUAN ; i1++)
-        if(zent_collide(shots[i1], player) != 0) {
+    //Collisions: shots
+    for(i1 = 0 ; i1 < ZOMBIE_SHOT_QUAN ; i1++) {
+        //If collision with player, remove shot (& reduce health)
+        if(zent_collide(shots[i1], player) != 0)
             zent_clear(shots + i1);
+
+        //If collision with zombie, remove both entities
+        for(i2 = 0 ; i2 < ZOMBIE_ZOMBIE_QUAN ; i2++)
+            if(zent_collide(shots[i1], zombies[i2]) != 0) {
+                zent_clear(shots + i1);
+                zent_clear(zombies + i2);
+            }
+    }
+
+    //Collisions: zombies
+    for(i1 = 0 ; i1 < ZOMBIE_ZOMBIE_QUAN ; i1++) {
+        //If collision with player, stop both (& reduce health)
+        if(zent_collide(zombies[i1], player) != 0) {
+            zombies[i1]->x -= zombies[i1]->vx;
+            zombies[i1]->y -= zombies[i1]->vy;
+            zombies[i1]->vx = 0;
+            zombies[i1]->vy = 0;
+
+            player->x -= player->vx;
+            player->y -= player->vy;
+            player->vx = 0;
+            player->vy = 0;
         }
+    }
 
     return 0;
 }
