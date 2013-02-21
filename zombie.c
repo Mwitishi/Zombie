@@ -164,7 +164,11 @@ int zombie_init()
     for(i1 = 0 ; i1 < ZOMBIE_SHOT_QUAN ; i1++)
         shots[i1] = NULL;
 
-    if(DEBUGMODE) printf("Shots created successfully. Trying to draw background.\n");
+    if(DEBUGMODE) printf("Shots created successfully. Trying to start IA.\n");
+
+    if(zia_init() != 0) return 1;
+
+    if(DEBUGMODE) printf("IA started successfully. Trying to draw background.\n");
 
     //Blit background to screen
     if(SDL_BlitSurface(background, NULL, screen, NULL) != 0)
@@ -605,6 +609,9 @@ int zombie_shoot()
 int zombie_clear()
 {
     int i1;
+
+    //Clear IA
+    zia_clear();
 
     //Free player
     zent_clear(&player);

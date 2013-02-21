@@ -129,5 +129,8 @@ int zent_clear(struct zent**);
 int zent_collide(struct zent*, struct zent*);
 
 //Declarations of functions in file zia.c
+int zia_run();
+int zia_init();
+int zia_clear();
 
 #endif

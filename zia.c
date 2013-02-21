@@ -18,6 +18,9 @@ int zia_run()
 {
     int i1;
 
+    //Check NULL
+    if(zombies == NULL) return 1;
+
     //Loop through each zombie
     for(i1 = 0 ; i1 < ZOMBIE_ZOMBIE_QUAN ; i1++) {
         //Don't process inexistent zombies
@@ -27,6 +30,7 @@ int zia_run()
     return 0;
 }
 
+//Initialization of the IA
 int zia_init()
 {
     int i1;
@@ -46,6 +50,7 @@ int zia_init()
     return 0;
 }
 
+//Function for cleaning up the IA variables & stuff
 int zia_clear()
 {
     //Free array
