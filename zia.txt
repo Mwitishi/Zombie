@@ -1,0 +1,25 @@
+File: zia.txt / Project: Zombie
+Author: Mwitishi
+
+This file contains information about how the AI coded in file zia.c works.
+Comments inside the source code are useful, but here is a full description.
+
+Variables prevx and prevy (float*) are arrays allocated in zia_init and
+freed in zia_clear. They have one entry per zombie possible entity (total
+amount = ZOMBIE_ZOMBIE_QUAN in zombie.h). They are meant to contain the
+previous positions of each zombie entity. A value of -1 in prevx means
+the entity was deleted: even if there's a new entity in place, the arrays
+will count as nonexistent. 
+
+Function zia_init should be called at the beginning of the program
+(preferably at the initialization function, if any) and performs tasks
+to prepare the AI for running. Currently:
+
+ - Allocate memory for (and set to empty) prevx and prevy.
+
+Function zia_clear must be called if zia_init was inside the program.
+It performs memory-freeing and other tasks for shutting up the AI.
+AI functions should not be called (except zia_init) after this one.
+Currently:
+
+ - Free memory in (and set to NULL) prevx and prevy.
