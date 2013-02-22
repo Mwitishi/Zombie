@@ -1,0 +1,10 @@
+File: todo.txt / Project: Zombie
+Author: Mwitishi
+
+Features to include in Zombie:
+
+ - Better AI
+
+ - Shooting animations
+
+ - Sounds
