@@ -25,6 +25,42 @@ int zia_run()
     for(i1 = 0 ; i1 < ZOMBIE_ZOMBIE_QUAN ; i1++) {
         //Don't process inexistent zombies
         if(zombies[i1] == NULL) continue;
+
+        //Stop zombie
+        zombies[i1]->vx = 0;
+        zombies[i1]->vy = 0;
+
+        //If moving left
+        if(zombies[i1]->x - player->x > ZOMBIE_ZOMBIE_DIFF) {
+            zombies[i1]->vx = -ZOMBIE_ZOMBIE_V;
+            zombies[i1]->st &= 0xfc;
+            zombies[i1]->st |= 0x03;
+            continue;
+        }
+
+        //If moving right
+        if(player->x - zombies[i1]->x > ZOMBIE_ZOMBIE_DIFF) {
+            zombies[i1]->vx = ZOMBIE_ZOMBIE_V;
+            zombies[i1]->st &= 0xfc;
+            zombies[i1]->st |= 0x01;
+            continue;
+        }
+
+        //If moving up
+        if(zombies[i1]->y - player->y > ZOMBIE_ZOMBIE_DIFF) {
+            zombies[i1]->vy = -ZOMBIE_ZOMBIE_V;
+            zombies[i1]->st &= 0xfc;
+            zombies[i1]->st |= 0x00;
+            continue;
+        }
+
+        //If moving down
+        if(player->y - zombies[i1]->y > ZOMBIE_ZOMBIE_DIFF) {
+            zombies[i1]->vy = ZOMBIE_ZOMBIE_V;
+            zombies[i1]->st &= 0xfc;
+            zombies[i1]->st |= 0x02;
+            continue;
+        }
     }
 
     return 0;

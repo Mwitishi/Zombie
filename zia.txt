@@ -17,6 +17,12 @@ to prepare the AI for running. Currently:
 
  - Allocate memory for (and set to empty) prevx and prevy.
 
+Function zia_run is called every tick for updating zombie movement.
+It is the main function and calls most of the others.
+Currently:
+
+ - Move zombies towards player.
+
 Function zia_clear must be called if zia_init was inside the program.
 It performs memory-freeing and other tasks for shutting up the AI.
 AI functions should not be called (except zia_init) after this one.
