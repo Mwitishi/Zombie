@@ -104,9 +104,9 @@ int zent_clear(struct zent **ze1)
     //Draw image
     SDL_BlitSurface(background, &((*ze1)->lastbox), screen, &((*ze1)->lastbox));
     //Draw death image
-    if(ze1->dimg != NULL) {
-        SDL_BlitSurface(ze1->dimg,NULL,background,&(ze1->lastbox));
-        SDL_BlitSurface(background,&(ze1->lastbox),screen,&(ze1->lastbox));
+    if((*ze1)->dimg != NULL) {
+        SDL_BlitSurface((*ze1)->dimg,NULL,background,&((*ze1)->lastbox));
+        SDL_BlitSurface(background,&((*ze1)->lastbox),screen,&((*ze1)->lastbox));
     }
 
     //Free hitbox array

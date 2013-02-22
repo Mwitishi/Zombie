@@ -8,3 +8,7 @@ Features to include in Zombie:
  - Shooting animations
 
  - Sounds
+
+ - Shorter ticks
+
+ - Debugging messages

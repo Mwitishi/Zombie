@@ -30,6 +30,8 @@ int zia_run()
         zombies[i1]->vx = 0;
         zombies[i1]->vy = 0;
 
+        //Move zombies towards player:
+
         //If moving left
         if(zombies[i1]->x - player->x > ZOMBIE_ZOMBIE_DIFF) {
             zombies[i1]->vx = -ZOMBIE_ZOMBIE_V;

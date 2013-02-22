@@ -190,15 +190,21 @@ int zombie_background_make()
     int i1, i2;
     SDL_Rect r1;
 
+    if(DEBUGMODE) printf("Attempting to create background. Trying to create image.\n");
+
     //Create empty image
     background = SDL_CreateRGBSurface(SDL_SWSURFACE, ZOMBIE_SCREEN_X, ZOMBIE_SCREEN_Y, 32,
         0xff000000, 0x00ff0000, 0x0000ff00, 0x000000ff);
     if(background == NULL) return 3;
 
+    if(DEBUGMODE) printf("Image created successfully. Trying to load tile.\n");
+
     //Load background tile
     tile = zombie_load_img(ZOMBIE_TILE_IMG, 0);
     if(tile == NULL) return 3;
     r1 = tile->clip_rect;
+
+    if(DEBUGMODE) printf("Tile loaded successfully. Filling background with tiles.\n");
 
     //Fill background with tiles
     for(i1 = 0 ; i1 < ZOMBIE_SCREEN_X / ZOMBIE_TILE_SIZE ; i1++)
@@ -212,6 +218,8 @@ int zombie_background_make()
                 return 3;
         }
 
+    if(DEBUGMODE) printf("Background filled. Index positions: %d;%d\n", i1, i2);
+
     return 0;
 }
 
@@ -223,14 +231,22 @@ int zombie_boxes_make()
     //Initialize random seed
     srand(time(NULL));
 
+    if(DEBUGMODE) printf("Creating boxes. Checking for NULL.\n");
+
     //Check if array exists
     if(boxes == NULL) return 1;
 
+    if(DEBUGMODE) printf("Pointers not NULL. Accessing array.\n");
+
     //Loop through array
     for(i1 = 0 ; i1 < ZOMBIE_BOX_QUAN ; i1++) {
+        if(DEBUGMODE) printf("Creating box %d. Allocating memory.\n", i1);
+
         //Allocate memory
         boxes[i1] = (struct zent*) malloc(sizeof(struct zent));
         if(boxes[i1] == NULL) return 1;
+
+        if(DEBUGMODE) printf("Memory allocated successfully. Choosing box position.\n");
 
         //Try until finding a free position
         while(1) {
@@ -248,6 +264,8 @@ int zombie_boxes_make()
 
             break;
         }
+
+        if(DEBUGMODE) printf("Box %d placed. Position: %.2f - %.2f\n", i1, boxes[i1]->x, boxes[i1]->y);
     }
 
     return 0;
