@@ -35,6 +35,7 @@
 #define ZOMBIE_TILE_IMG "zombie_tile.png"
 #define ZOMBIE_PLAYER_IMG "zombie_player.png"
 #define ZOMBIE_ZOMBIE_IMG "zombie_zombie.png"
+#define ZOMBIE_ZDEAD_IMG "zombie_zdead.png"
 #define ZOMBIE_BOX_IMG "zombie_box.png"
 #define ZOMBIE_SHOT_IMG "zombie_shot.png"
 
@@ -75,6 +76,7 @@ extern SDL_Surface *background;
 extern SDL_Surface *tile;
 extern SDL_Surface *img_player;
 extern SDL_Surface *img_zombie;
+extern SDL_Surface *img_zdead;
 extern SDL_Surface *img_box;
 extern struct zent *player;
 extern struct zent **zombies;
@@ -87,8 +89,9 @@ extern int reload;
 
 //Structure for entities (player, zombies, shots)
 struct zent{
-    //Image, with all possible states & frames
+    //Image, with all possible states & frames, & image when death
     SDL_Surface *img;
+    SDL_Surface *dimg;
     //Last position, for deleting previous drawn image
     SDL_Rect lastbox;
     //Position with decimals

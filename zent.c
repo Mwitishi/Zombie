@@ -18,6 +18,7 @@ struct zent zent_make(SDL_Surface *img, float x, float y, int w, int h, int tpf)
     int i1;
 
     ze1.img = img;
+    ze1.dimg = NULL;
     ze1.x = x;
     ze1.y = y;
     //Velocity must be set afterwards
@@ -100,7 +101,13 @@ int zent_clear(struct zent **ze1)
     if(ze1 == NULL) return 1;
     if(*ze1 == NULL) return 0;
 
+    //Draw image
     SDL_BlitSurface(background, &((*ze1)->lastbox), screen, &((*ze1)->lastbox));
+    //Draw death image
+    if(ze1->dimg != NULL) {
+        SDL_BlitSurface(ze1->dimg,NULL,background,&(ze1->lastbox));
+        SDL_BlitSurface(background,&(ze1->lastbox),screen,&(ze1->lastbox));
+    }
 
     //Free hitbox array
     if((*ze1)->hitbox != NULL) {

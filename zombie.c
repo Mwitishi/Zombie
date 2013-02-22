@@ -25,6 +25,7 @@ SDL_Surface *background = NULL;
 SDL_Surface *tile = NULL;
 SDL_Surface *img_player = NULL;
 SDL_Surface *img_zombie = NULL;
+SDL_Surface *img_zdead = NULL;
 SDL_Surface *img_box = NULL;
 SDL_Surface *img_shot = NULL;
 //Entities
