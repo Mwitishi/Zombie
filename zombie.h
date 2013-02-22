@@ -27,7 +27,7 @@
 
 //Basic macros
 #define ZOMBIE_NAME "Zombie by Mwitishi"
-#define ZOMBIE_VERSION "v0.3"
+#define ZOMBIE_VERSION "v0.4"
 #define DEBUGMODE 0
 
 //File and directory names

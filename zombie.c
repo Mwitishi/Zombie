@@ -282,6 +282,9 @@ int zombie_zombies_make()
                 if(zent_collide(zombies[i3], zombies[i1]) != 0 ) break;
             if(i3 != i1) continue;
 
+            //Add details
+            zombies[i1]->st = 0x03;
+
             break;
         }
     }
@@ -687,6 +690,11 @@ int main(int argc, char **argv)
 
         //Event processing
         if(zombie_event() != 0) goto end;
+
+        //Create zombies if necessary
+        if(zombie_zombies_make() != 0) goto end;
+
+        if(zia_run() != 0) goto end;
 
         //Update positions
         zombie_update();
