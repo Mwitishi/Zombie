@@ -502,6 +502,22 @@ int zombie_update()
             player->vx = 0;
             player->vy = 0;
         }
+
+        //Check only zombies after this one
+        for(i2 = i1 + 1 ; i2 < ZOMBIE_ZOMBIE_QUAN ; i2++) {
+            //If collision with other zombie, stop both
+            if(zent_collide(zombies[i1], zombies[i2]) != 0) {
+                zombies[i1]->x -= zombies[i1]->vx;
+                zombies[i1]->y -= zombies[i1]->vy;
+                zombies[i1]->vx = 0;
+                zombies[i1]->vy = 0;
+
+                zombies[i2]->x -= zombies[i2]->vx;
+                zombies[i2]->y -= zombies[i2]->vy;
+                zombies[i2]->vx = 0;
+                zombies[i2]->vy = 0;
+            }
+        }
     }
 
     return 0;
