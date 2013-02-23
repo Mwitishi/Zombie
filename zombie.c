@@ -125,6 +125,9 @@ int zombie_init()
     img_shot = zombie_load_img(ZOMBIE_SHOT_IMG, 0);
     if(img_shot == NULL) return 1;
 
+    img_zdead = zombie_load_img(ZOMBIE_ZDEAD_IMG, 1);
+    if(img_zdead == NULL) return 1;
+
     if(DEBUGMODE) printf("Images loaded successfully. Trying to create player.\n");
 
     //Create player entity
@@ -303,6 +306,10 @@ int zombie_zombies_make()
 
             //Add details
             zombies[i1]->st = 0x03;
+            zombies[i1]->dimg = img_zdead;
+            zombies[i1]->dbox = zombies[i1]->dimg->clip_rect;
+            zombies[i1]->dbox.x = 0;
+            zombies[i1]->dbox.y = -10;
 
             break;
         }
@@ -679,6 +686,7 @@ int zombie_clear()
     shots = NULL;
 
     //Free images
+    SDL_FreeSurface(img_zdead);
     SDL_FreeSurface(img_shot);
     SDL_FreeSurface(img_player);
     SDL_FreeSurface(img_zombie);

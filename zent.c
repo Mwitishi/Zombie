@@ -96,6 +96,7 @@ int zent_draw(struct zent *ze1)
 int zent_clear(struct zent **ze1)
 {
     int i1;
+    SDL_Rect r1;
 
     //If null pointers
     if(ze1 == NULL) return 1;
@@ -105,8 +106,12 @@ int zent_clear(struct zent **ze1)
     SDL_BlitSurface(background, &((*ze1)->lastbox), screen, &((*ze1)->lastbox));
     //Draw death image
     if((*ze1)->dimg != NULL) {
-        SDL_BlitSurface((*ze1)->dimg,NULL,background,&((*ze1)->lastbox));
-        SDL_BlitSurface(background,&((*ze1)->lastbox),screen,&((*ze1)->lastbox));
+        r1.x = (int) (*ze1)->x + (*ze1)->dbox.x;
+        r1.y = (int) (*ze1)->y + (*ze1)->dbox.y;
+        r1.w = (*ze1)->dbox.w;
+        r1.h = (*ze1)->dbox.h;
+        SDL_BlitSurface((*ze1)->dimg,NULL,background,&r1);
+        SDL_BlitSurface(background,&r1,screen,&r1);
     }
 
     //Free hitbox array

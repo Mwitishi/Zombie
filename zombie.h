@@ -94,6 +94,7 @@ struct zent{
     SDL_Surface *dimg;
     //Last position, for deleting previous drawn image
     SDL_Rect lastbox;
+    SDL_Rect dbox;
     //Position with decimals
     float x;
     float y;
