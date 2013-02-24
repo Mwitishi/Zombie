@@ -12,3 +12,9 @@ Features to include in Zombie:
  - Shorter ticks
 
  - Debugging messages
+
+ - Health
+
+ - Scores
+
+ - Ammunition

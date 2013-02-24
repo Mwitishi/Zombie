@@ -28,6 +28,7 @@ SDL_Surface *img_zombie = NULL;
 SDL_Surface *img_zdead = NULL;
 SDL_Surface *img_box = NULL;
 SDL_Surface *img_shot = NULL;
+SDL_Surface *img_health = NULL;
 //Entities
 struct zent *player = NULL;
 struct zent **zombies = NULL;
@@ -36,6 +37,7 @@ struct zent **shots = NULL;
 //Counters
 uint32_t tick = 0;
 int reload = 0;
+int health = ZOMBIE_MAX_HEALTH;
 
 //Function for loading an image and preparing it
 SDL_Surface *zombie_load_img(char *name, char alpha)
@@ -127,6 +129,9 @@ int zombie_init()
 
     img_zdead = zombie_load_img(ZOMBIE_ZDEAD_IMG, 1);
     if(img_zdead == NULL) return 1;
+
+    img_health = zombie_load_img(ZOMBIE_HEALTH_IMG, 1);
+    if(img_health == NULL) return 1;
 
     if(DEBUGMODE) printf("Images loaded successfully. Trying to create player.\n");
 
@@ -527,6 +532,7 @@ int zombie_update()
             player->y -= player->vy;
             player->vx = 0;
             player->vy = 0;
+            health -= ZOMBIE_HIT_HLOSS;
         }
 
         //Check only zombies after this one
@@ -552,6 +558,16 @@ int zombie_update()
 int zombie_draw()
 {
     int i1;
+    SDL_Rect r1;
+
+    r1.y = ZOMBIE_HEALTH_MARG;
+    r1.w = r1.h = ZOMBIE_HEALTH_SIZE;
+
+    //Clean health
+    for(i1 = 0 ; i1 < ZOMBIE_MAX_HEALTH ; i1++) {
+        r1.x = ZOMBIE_HEALTH_MARG + 2 * i1 * ZOMBIE_HEALTH_SIZE;
+        SDL_BlitSurface(background, &r1, screen, &r1);
+    }
 
     //Entity drawing: player
     if(zent_draw(player) != 0) return 1;
@@ -575,6 +591,14 @@ int zombie_draw()
         if(shots[i1] == NULL) continue;
 
         if(zent_draw(shots[i1]) != 0) return 1;
+    }
+
+    //Drawing health
+    for(i1 = 0 ; i1 < health ; i1++) {
+        if(img_health == NULL) continue;
+
+        r1.x = ZOMBIE_HEALTH_MARG + 2 * i1 * ZOMBIE_HEALTH_SIZE;
+        SDL_BlitSurface(img_health, NULL, screen, &r1);
     }
 
     //Update screen
@@ -686,6 +710,7 @@ int zombie_clear()
     shots = NULL;
 
     //Free images
+    SDL_FreeSurface(img_health);
     SDL_FreeSurface(img_zdead);
     SDL_FreeSurface(img_shot);
     SDL_FreeSurface(img_player);

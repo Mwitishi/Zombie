@@ -38,6 +38,7 @@
 #define ZOMBIE_ZDEAD_IMG "zombie_zdead.png"
 #define ZOMBIE_BOX_IMG "zombie_box.png"
 #define ZOMBIE_SHOT_IMG "zombie_shot.png"
+#define ZOMBIE_HEALTH_IMG "zombie_health.png"
 
 //Number macros
 #define ZOMBIE_SCREEN_X 640
@@ -48,7 +49,9 @@
 #define ZOMBIE_ZOMBIE_SIZE 32
 #define ZOMBIE_BOX_SIZE 32
 #define ZOMBIE_SHOT_SIZE 2
+#define ZOMBIE_HEALTH_SIZE 16
 #define ZOMBIE_BOX_MARG 32
+#define ZOMBIE_HEALTH_MARG 16
 #define ZOMBIE_ZOMBIE_DIFF 16
 #define ZOMBIE_ZOMBIE_QUAN 5
 #define ZOMBIE_BOX_QUAN 10
@@ -63,6 +66,8 @@
 #define ZOMBIE_SHOT_TPF 1
 #define ZOMBIE_ZOMBIE_GEN_PROB 100
 #define ZOMBIE_GEN_TRY 3
+#define ZOMBIE_MAX_HEALTH 10
+#define ZOMBIE_HIT_HLOSS 1
 #define ZOMBIE_RELOAD_TIME 3
 #define ZOMBIE_TICK_MS 100
 #define ZOMBIE_MAX_TICK 16
@@ -84,6 +89,7 @@ extern struct zent **boxes;
 extern struct zent **shots;
 extern uint32_t tick;
 extern int reload;
+extern int health;
 
 #endif
 
