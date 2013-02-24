@@ -38,6 +38,7 @@ struct zent **shots = NULL;
 uint32_t tick = 0;
 int reload = 0;
 int health = ZOMBIE_MAX_HEALTH;
+int immune = 0;
 
 //Function for loading an image and preparing it
 SDL_Surface *zombie_load_img(char *name, char alpha)
@@ -532,7 +533,12 @@ int zombie_update()
             player->y -= player->vy;
             player->vx = 0;
             player->vy = 0;
-            health -= ZOMBIE_HIT_HLOSS;
+
+            //Reduce health if no immunity, set immunity
+            if(immune == 0) {
+                health -= ZOMBIE_HIT_HLOSS;
+                immune = ZOMBIE_IMMUNE_TIME;
+            }
         }
 
         //Check only zombies after this one
@@ -777,6 +783,7 @@ int main(int argc, char **argv)
         tick = (tick + 1) % ZOMBIE_MAX_TICK;
         //Reloading time decreased
         if(reload > 0) reload--;
+        if(immune > 0) immune--;
     }
 
 end:

@@ -69,6 +69,7 @@
 #define ZOMBIE_MAX_HEALTH 10
 #define ZOMBIE_HIT_HLOSS 1
 #define ZOMBIE_RELOAD_TIME 3
+#define ZOMBIE_IMMUNE_TIME 5
 #define ZOMBIE_TICK_MS 100
 #define ZOMBIE_MAX_TICK 16
 
@@ -83,6 +84,7 @@ extern SDL_Surface *img_player;
 extern SDL_Surface *img_zombie;
 extern SDL_Surface *img_zdead;
 extern SDL_Surface *img_box;
+extern SDL_Surface *img_health;
 extern struct zent *player;
 extern struct zent **zombies;
 extern struct zent **boxes;
@@ -90,6 +92,7 @@ extern struct zent **shots;
 extern uint32_t tick;
 extern int reload;
 extern int health;
+extern int immune;
 
 #endif
 
@@ -128,6 +131,7 @@ SDL_Surface *zombie_load_img(char*, char);
 int zombie_init();
 int zombie_background_make();
 int zombie_boxes_make();
+int zombie_zombies_make();
 int zombie_event();
 int zombie_update();
 int zombie_shoot();
